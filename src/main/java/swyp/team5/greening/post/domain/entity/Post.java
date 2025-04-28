@@ -1,0 +1,51 @@
+package swyp.team5.greening.post.domain.entity;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import swyp.team5.greening.common.base.BaseTimeEntity;
+
+@Entity
+@Table(name = "posts")
+public class Post extends BaseTimeEntity {
+
+    @Id
+    @Column(name = "post_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "like_count")
+    private Long likeCount;
+
+    @Column(name = "comment_count")
+    private Long commentCount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private PostState state;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    private final List<PostImage> postImages = new ArrayList<>();
+
+}
