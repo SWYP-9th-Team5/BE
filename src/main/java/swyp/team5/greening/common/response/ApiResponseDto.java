@@ -1,0 +1,11 @@
+package swyp.team5.greening.common.response;
+
+public record ApiResponseDto<T>(
+        T data
+) {
+
+    public static <T> ApiResponseDto<T> of(T data) {
+        return new ApiResponseDto<>(data);
+    }
+
+}
