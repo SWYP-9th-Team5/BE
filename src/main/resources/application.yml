@@ -21,4 +21,4 @@ spring:
 
 jwt:
   access-expiry-time: 1440  # 24시간
-  client-secret: fdflsjhflkwejfblkjhvuixochvuhsofiuesafbidsfab223411
+  client-secret: f60b1785232c0e9bc42e687d4d2d5c369ab4122c4c8cded1baaf6ae9ef00f01b  # 32바이트 문자열
