@@ -18,3 +18,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+jwt:
+  access-expiry-time: 1440  # 24시간
+  client-secret: fdflsjhflkwejfblkjhvuixochvuhsofiuesafbidsfab223411
