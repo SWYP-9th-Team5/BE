@@ -26,6 +26,7 @@ public class SwaggerConfig {
 
         SecurityRequirement securityRequirement = new SecurityRequirement()
                 .addList(accessToken);
+
         Components components = new Components()
                 .addSecuritySchemes(accessToken,
                         new SecurityScheme()
