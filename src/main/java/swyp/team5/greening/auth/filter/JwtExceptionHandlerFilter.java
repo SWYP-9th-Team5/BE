@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import swyp.team5.greening.auth.exception.AuthException;
 import swyp.team5.greening.common.exception.ExceptionResponse;
 
-@Component
 @Slf4j
 public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
