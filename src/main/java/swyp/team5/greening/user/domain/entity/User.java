@@ -8,10 +8,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "users")
+@Getter
+@NoArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -32,4 +37,11 @@ public class User extends BaseTimeEntity {
     @Column(name = "nickname")
     private String nickname;
 
+    @Builder
+    public User(String email, LoginType loginType, String userName, String nickname) {
+        this.email = email;
+        this.loginType = loginType;
+        this.userName = userName;
+        this.nickname = nickname;
+    }
 }

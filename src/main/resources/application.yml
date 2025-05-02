@@ -22,3 +22,16 @@ spring:
 jwt:
   access-expiry-time: 1440  # 24시간
   client-secret: f60b1785232c0e9bc42e687d4d2d5c369ab4122c4c8cded1baaf6ae9ef00f01b  # 32바이트 문자열
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+
+oauth:
+  kakao:
+    token_base_url: "https://kauth.kakao.com/oauth/token"
+    user_info_base_url: "https://kapi.kakao.com/v2/user/me"
+    security:
+      client_id: "27e0a3291880d7f8220ddb5e90dd66d6"
+      grant_type: "authorization_code"
+      redirect_uri: "http://localhost:8000/api/oauth2/kakao/redirect"

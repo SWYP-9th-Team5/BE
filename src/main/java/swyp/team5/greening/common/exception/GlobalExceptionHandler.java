@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import swyp.team5.greening.auth.exception.AuthException;
 
 @Slf4j
 @RestControllerAdvice
@@ -44,5 +45,20 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(new ExceptionResponse(message),
                 HttpStatusCode.valueOf(Integer.parseInt(code)));
+    }
+
+    //인증 관련 예외 처리 핸들러
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ExceptionResponse> authExceptionHandler(
+            AuthException authException
+    ) {
+        String message = authException.getMessage();
+        String code = authException.getCode();
+
+        log.error("HttpStatus : {}, Exception Message : {}", code, message);
+
+        return new ResponseEntity<>(new ExceptionResponse(message),
+                HttpStatusCode.valueOf(Integer.parseInt(code)));
+
     }
 }
