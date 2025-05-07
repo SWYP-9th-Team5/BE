@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import swyp.team5.greening.auth.property.JwtProperty;
 
+@DisplayName("Jwt 토큰 생성 및 파싱 테스트")
 @ExtendWith(MockitoExtension.class)
 class JwtTokenProviderTest {
 
@@ -26,7 +27,6 @@ class JwtTokenProviderTest {
     private Long id;
 
     @Test
-    @DisplayName("Jwt 토큰 생성 및 파싱 테스트")
     void jwtTokenCreateAndParsingTest() {
         //given
         id = 253L;
