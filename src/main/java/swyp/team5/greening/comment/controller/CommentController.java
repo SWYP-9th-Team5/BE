@@ -48,7 +48,7 @@ public class CommentController {
     @Operation(summary = "게시물 댓글 목록 조회 API")
     @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public PaginationApiResponseDto<FindAllCommentResponseDto> getComment(
+    public PaginationApiResponseDto<FindAllCommentResponseDto> getAllComment(
             @LogIn Long userId,
             @PathVariable("postId") Long postId,
             @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
