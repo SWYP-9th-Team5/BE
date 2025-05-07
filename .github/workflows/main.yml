@@ -46,8 +46,13 @@ jobs:
           username: ${{ secrets.NCP_USER }}
           key: ${{ secrets.NCP_SSH_KEY }}
           script: |
+            fuser -k 8080/tcp || true
+          
+            # 컨테이너 및 이미지 강제 삭제
+            docker rm -f $(docker ps -aq) || true
+            docker rmi -f $(docker images -q) || true
+          
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
-            docker stop greening || true && docker rm greening || true
             docker run -d --name greening -p 8080:8080 \
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
