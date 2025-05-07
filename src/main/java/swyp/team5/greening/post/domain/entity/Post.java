@@ -12,10 +12,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "posts")
+@Getter
+@NoArgsConstructor
 public class Post extends BaseTimeEntity {
 
     @Id
@@ -48,4 +53,22 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final List<PostImage> postImages = new ArrayList<>();
 
+    @Builder
+    public Post(
+            String title,
+            String content,
+            Long likeCount,
+            Long commentCount,
+            PostState state,
+            Long categoryId,
+            Long userId
+    ) {
+        this.title = title;
+        this.content = content;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.state = state;
+        this.categoryId = categoryId;
+        this.userId = userId;
+    }
 }
