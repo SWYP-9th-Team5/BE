@@ -6,10 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "comments")
+@Getter
+@NoArgsConstructor
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -26,4 +31,14 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long postId;
 
+    @Builder
+    public Comment(
+            String comment,
+            Long userId,
+            Long postId
+    ) {
+        this.comment = comment;
+        this.userId = userId;
+        this.postId = postId;
+    }
 }
