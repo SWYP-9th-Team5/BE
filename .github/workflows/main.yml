@@ -49,11 +49,11 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
             docker stop greening || true && docker rm greening || true
             docker run -d --name greening -p 8080:8080 \
-              -e DB_URL=${{ secrets.DB_URL }} \
-              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
-              -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
+              -e "DB_URL=${{ secrets.DB_URL }}" \
+              -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
+              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+              -e "JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }}" \
+              -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
+              -e "KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
