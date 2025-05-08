@@ -1,4 +1,4 @@
-package swyp.team5.greening.common.response;
+package swyp.team5.greening.common.dto.response;
 
 import java.util.List;
 import org.springframework.data.domain.Page;

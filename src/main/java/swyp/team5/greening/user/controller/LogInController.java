@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import swyp.team5.greening.common.response.ApiResponseDto;
+import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.user.dto.request.LogInRequestDto;
 import swyp.team5.greening.user.dto.response.LoginResponseDto;
 import swyp.team5.greening.user.service.KakaoLogInService;
