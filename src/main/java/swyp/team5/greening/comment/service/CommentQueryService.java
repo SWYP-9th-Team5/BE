@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import swyp.team5.greening.comment.domain.repository.CommentQueryRepository;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
-import swyp.team5.greening.comment.exception.PostExceptionMessage;
+import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 
