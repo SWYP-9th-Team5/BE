@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import swyp.team5.greening.common.response.ApiResponseDto;
 import swyp.team5.greening.user.dto.request.LogInRequestDto;
 import swyp.team5.greening.user.dto.response.LoginResponseDto;
+import swyp.team5.greening.user.service.GoogleLogInService;
 import swyp.team5.greening.user.service.KakaoLogInService;
 
 @Tag(name = "유저 로그인 관련 API")
@@ -21,12 +22,20 @@ import swyp.team5.greening.user.service.KakaoLogInService;
 public class LogInController {
 
     private final KakaoLogInService kakaoLogInService;
+    private final GoogleLogInService googleLogInService;
 
     @Operation(summary = "카카오 로그인 API")
     @PostMapping("/kakao")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<LoginResponseDto> kakaoLogin(@RequestBody LogInRequestDto requestDto) {
         return ApiResponseDto.of(kakaoLogInService.kakaoLogin(requestDto.code()));
+    }
+
+    @Operation(summary = "구글 로그인 API")
+    @PostMapping("/google")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<LoginResponseDto> googleLogin(@RequestBody LogInRequestDto requestDto) {
+        return ApiResponseDto.of(googleLogInService.googleLogin(requestDto.code()));
     }
 
 }
