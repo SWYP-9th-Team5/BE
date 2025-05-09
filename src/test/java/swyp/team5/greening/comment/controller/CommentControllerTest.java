@@ -1,5 +1,6 @@
 package swyp.team5.greening.comment.controller;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,7 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import swyp.team5.greening.comment.domain.entity.Comment;
 import swyp.team5.greening.comment.domain.repository.CommentRepository;
+import swyp.team5.greening.comment.dto.request.DeleteCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
+import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
@@ -41,9 +44,9 @@ class CommentControllerTest extends ApiTestSupport {
         commentRepository.deleteAll();
     }
 
-    @DisplayName("댓글 생성 테스트")
     @Nested
-    class addCommentTest {
+    @DisplayName("댓글이 존재하지 않는다.")
+    class TestCase1 {
 
         Post post;
 
@@ -65,7 +68,7 @@ class CommentControllerTest extends ApiTestSupport {
 
         @Test
         @DisplayName("사용자는 게시물에 댓글을 작성할 수 있다.")
-        void testCase1() throws Exception {
+        void addCommentTest() throws Exception {
             //given
             String comment = "테스트 댓글";
             SaveCommentRequestDto requestDto = new SaveCommentRequestDto(post.getId(), comment);
@@ -82,9 +85,9 @@ class CommentControllerTest extends ApiTestSupport {
         }
     }
 
-    @DisplayName("댓글 조회 테스트")
+    @DisplayName("댓글이 2개 존재한다.")
     @Nested
-    class getAllCommentTest {
+    class TestCase2 {
 
         User anotherUser;
         String anotherEmail = "test@kakao.com";
@@ -136,7 +139,7 @@ class CommentControllerTest extends ApiTestSupport {
 
         @Test
         @DisplayName("게시물에 작성된 댓글을 모두 조회할 수 있다. 최신순으로 정렬되며, 자신이 작성한 댓글에 대한 boolean 값을 알맞게 내려준다")
-        void testCase1() throws Exception {
+        void getAllCommentTest() throws Exception {
             //when
             ResultActions perform = mockMvc.perform(get("/api/comments/posts/" + post.getId())
                     .header(HttpHeaders.AUTHORIZATION, accessToken)
@@ -154,6 +157,42 @@ class CommentControllerTest extends ApiTestSupport {
                     jsonPath("$.data[1].comment").value(comment1.getComment()),
                     jsonPath("$.data[1].isWriter").value(true)
             );
+        }
+
+        @Test
+        @DisplayName("자신이 작성한 댓글을 삭제할 수 있다.")
+        void deleteComment1() throws Exception {
+            //given
+            DeleteCommentRequestDto requestDto = new DeleteCommentRequestDto(comment1.getId());
+
+            //when
+            ResultActions perform = mockMvc.perform(delete("/api/comments")
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(requestDto)));
+
+            //then
+            perform.andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("다른 사용자가 작성한 댓글을 삭제시도 할 경우 예외가 발생한다")
+        void deleteComment2() throws Exception {
+            //given
+            DeleteCommentRequestDto requestDto = new DeleteCommentRequestDto(comment2.getId());
+
+            //when
+            ResultActions perform = mockMvc.perform(delete("/api/comments")
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(requestDto)));
+
+            //then
+            perform.andExpect(status().isBadRequest())
+                    .andExpect(result ->
+                            assertThat(result.getResolvedException()).getClass()
+                            .isAssignableFrom(
+                                    GreeningGlobalException.class));
         }
     }
 
