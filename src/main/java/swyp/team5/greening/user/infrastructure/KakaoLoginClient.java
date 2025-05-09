@@ -55,7 +55,5 @@ public class KakaoLoginClient {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .retrieve()
                 .body(Map.class);
-
     }
-
 }
