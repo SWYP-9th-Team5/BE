@@ -9,19 +9,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
+import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.service.CommentCommandService;
 import swyp.team5.greening.comment.service.CommentQueryService;
 import swyp.team5.greening.common.dto.request.PaginationRequestDto;
 import swyp.team5.greening.common.resolver.LogIn;
-import swyp.team5.greening.common.response.ApiResponseDto;
-import swyp.team5.greening.common.response.PaginationApiResponseDto;
+import swyp.team5.greening.common.dto.response.ApiResponseDto;
+import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 
 @Tag(name = "댓글 관련 API")
 @RestController
@@ -57,6 +59,16 @@ public class CommentController {
                 userId, postId,
                 paginationRequestDto.pageNumber(), paginationRequestDto.pageSize()
         ));
+    }
+
+    @Operation(summary = "댓글 수정 API")
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updateComment(
+            @LogIn Long userId,
+            @Validated @RequestBody UpdateCommentRequestDto requestDto
+    ) {
+        commentCommandService.updateComment(userId, requestDto);
     }
 
 }

@@ -1,13 +1,16 @@
 package swyp.team5.greening.comment.service;
 
 import jakarta.transaction.Transactional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import swyp.team5.greening.comment.domain.entity.Comment;
 import swyp.team5.greening.comment.domain.repository.CommentRepository;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
+import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
-import swyp.team5.greening.comment.exception.PostExceptionMessage;
+import swyp.team5.greening.comment.exception.CommentExceptionMessage;
+import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 
@@ -36,6 +39,25 @@ public class CommentCommandService {
                 .build());
 
         return new SaveCommentResponseDto(saveComment.getId());
+    }
+
+    //댓글 수정 로직
+    @Transactional
+    public void updateComment(
+            Long userId,
+            UpdateCommentRequestDto requestDto
+    ) {
+        //댓글 조회
+        Comment comment = commentRepository.findById(requestDto.commentId())
+                .orElseThrow(() -> new GreeningGlobalException(
+                        CommentExceptionMessage.NOT_FOUND_COMMENT));
+
+        //댓글 수정 권한 확인
+        if (!Objects.equals(comment.getUserId(), userId)) {
+            throw new GreeningGlobalException(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER);
+        }
+
+        comment.update(requestDto.comment());
     }
 
 }

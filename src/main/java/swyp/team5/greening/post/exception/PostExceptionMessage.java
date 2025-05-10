@@ -1,4 +1,4 @@
-package swyp.team5.greening.comment.exception;
+package swyp.team5.greening.post.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
