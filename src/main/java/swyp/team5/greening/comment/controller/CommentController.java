@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import swyp.team5.greening.comment.dto.request.DeleteCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
@@ -69,6 +71,16 @@ public class CommentController {
             @Validated @RequestBody UpdateCommentRequestDto requestDto
     ) {
         commentCommandService.updateComment(userId, requestDto);
+    }
+
+    @Operation(summary = "댓글 삭제 API")
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(
+            @LogIn Long userId,
+            @Validated @RequestBody DeleteCommentRequestDto requestDto
+    ) {
+        commentCommandService.deleteComment(userId, requestDto);
     }
 
 }

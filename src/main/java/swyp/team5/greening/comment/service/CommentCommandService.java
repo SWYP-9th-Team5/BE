@@ -3,9 +3,11 @@ package swyp.team5.greening.comment.service;
 import jakarta.transaction.Transactional;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import swyp.team5.greening.comment.domain.entity.Comment;
 import swyp.team5.greening.comment.domain.repository.CommentRepository;
+import swyp.team5.greening.comment.dto.request.DeleteCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
@@ -14,6 +16,7 @@ import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentCommandService {
@@ -58,6 +61,31 @@ public class CommentCommandService {
         }
 
         comment.update(requestDto.comment());
+    }
+
+    //댓글 삭제
+    @Transactional
+    public void deleteComment(
+            Long userId,
+            DeleteCommentRequestDto requestDto
+    ) {
+        //댓글 조회
+        Comment comment = commentRepository.findById(requestDto.commentId())
+                .orElseThrow(() -> new GreeningGlobalException(
+                        CommentExceptionMessage.NOT_FOUND_COMMENT));
+
+        log.info("log");
+        log.info("{}", comment.getId());
+        log.info("{}", comment.getUserId());
+        log.info("{}", comment.getComment());
+
+        //댓글 수정 권한 확인
+        if (!Objects.equals(comment.getUserId(), userId)) {
+            throw new GreeningGlobalException(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER);
+        }
+
+        //댓글 삭제
+        commentRepository.deleteById(requestDto.commentId());
     }
 
 }

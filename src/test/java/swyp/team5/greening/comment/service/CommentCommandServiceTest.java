@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import swyp.team5.greening.comment.domain.entity.Comment;
 import swyp.team5.greening.comment.domain.repository.CommentRepository;
+import swyp.team5.greening.comment.dto.request.DeleteCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
@@ -130,6 +131,20 @@ class CommentCommandServiceTest {
             assertThatThrownBy(throwingCallable)
                     .isInstanceOf(GreeningGlobalException.class)
                     .hasMessageContaining(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER.getMessage());
+        }
+
+        @Test
+        @DisplayName("댓글 삭제할 수 있다.")
+        void testCase3() {
+            //given
+            given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
+
+            //when
+            commentCommandService.deleteComment(userId,
+                    new DeleteCommentRequestDto(commentId));
+
+            //then
+            verify(commentRepository, times(1)).deleteById(commentId);
         }
     }
 }

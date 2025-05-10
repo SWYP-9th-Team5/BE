@@ -9,6 +9,8 @@ public interface CommentRepository {
 
     Optional<Comment> findById(Long id);
 
+    void deleteById(Long id);
+
     void deleteAll();
 
 }
