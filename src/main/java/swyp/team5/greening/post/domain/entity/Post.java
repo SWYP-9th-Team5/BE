@@ -31,9 +31,6 @@ public class Post extends BaseTimeEntity {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content")
-    private String content;
-
     @Column(name = "like_count")
     private Long likeCount;
 
@@ -51,12 +48,11 @@ public class Post extends BaseTimeEntity {
     private Long userId;
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    private final List<PostImage> postImages = new ArrayList<>();
+    private final List<PostContent> postImages = new ArrayList<>();
 
     @Builder
     public Post(
             String title,
-            String content,
             Long likeCount,
             Long commentCount,
             PostState state,
@@ -64,7 +60,6 @@ public class Post extends BaseTimeEntity {
             Long userId
     ) {
         this.title = title;
-        this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.state = state;
