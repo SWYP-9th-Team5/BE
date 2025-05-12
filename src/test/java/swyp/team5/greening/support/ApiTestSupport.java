@@ -38,10 +38,10 @@ public abstract class ApiTestSupport extends TestContainerSupport{
         }
 
         User user = userRepository.save(User.builder()
-                        .email("test@gmail.com")
-                        .loginType(LoginType.GOOGLE)
-                        .userName("테스트")
-                        .nickname("테스트 닉네임")
+                .email("test@gmail.com")
+                .loginType(LoginType.GOOGLE)
+                .userName("테스트")
+                .nickname("테스트 닉네임")
                 .build());
         String token = tokenProvider.createToken(user.getId());
 
