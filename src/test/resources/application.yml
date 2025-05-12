@@ -13,14 +13,31 @@ spring:
         format_sql: true
 
 jwt:
-  access-expiry-time: 1440  # 24시간
-  client-secret: f60b1785232c0e9bc42e687d4d2d5c369ab4122c4c8cded1baaf6ae9ef00f01b  # 32바이트 문자열
+  access-expiry-time: ${JWT_ACCESS_EXPIRY}
+  client-secret: ${JWT_SECRET}
 
 oauth:
   kakao:
-    token_base_url: "https://kauth.kakao.com/oauth/token"
-    user_info_base_url: "https://kapi.kakao.com/v2/user/me"
+    token_base_url: https://kauth.kakao.com/oauth/token
+    user_info_base_url: https://kapi.kakao.com/v2/user/me
     security:
-      client_id: "27e0a3291880d7f8220ddb5e90dd66d6"
-      grant_type: "authorization_code"
-      redirect_uri: "http://localhost:3000/login/kakao"
+      client_id: ${KAKAO_CLIENT_ID}
+      grant_type: authorization_code
+      redirect_uri: ${KAKAO_REDIRECT_URI}
+  google:
+    token_base_url: https://oauth2.googleapis.com/token
+    user_info_base_url: https://www.googleapis.com/oauth2/v2/userinfo
+    security:
+      client_id: ${GOOGLE_CLIENT_ID}
+      client_secret: ${GOOGLE_CLIENT_SECRET}
+      grant_type: authorization_code
+      redirect_uri: ${GOOGLE_REDIRECT_URI}
+
+ncp:
+  storage:
+    region: kr-standard
+    bucket: ${NCP_BUCKET}
+    end-point: "https://kr.object.ncloudstorage.com"
+    access-key: ${NCP_STORAGE_ACCESS_KEY}
+    secret-key: ${NCP_STORAGE_SECRET_KEY}
+    base-url: ${NCP_BASE_URL}

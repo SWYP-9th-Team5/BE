@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     defer-datasource-initialization: true
     open-in-view: false
     properties:
@@ -35,3 +35,12 @@ oauth:
       client_secret: ${GOOGLE_CLIENT_SECRET}
       grant_type: authorization_code
       redirect_uri: ${GOOGLE_REDIRECT_URI}
+
+ncp:
+  storage:
+    region: kr-standard
+    bucket: ${NCP_BUCKET}
+    end-point: "https://kr.object.ncloudstorage.com"
+    access-key: ${NCP_STORAGE_ACCESS_KEY}
+    secret-key: ${NCP_STORAGE_SECRET_KEY}
+    base-url: ${NCP_BASE_URL}

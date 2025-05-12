@@ -63,4 +63,8 @@ jobs:
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
               -e "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" \
+              -e "NCP_BUCKET=${{ secrets.NCP_BUCKET }}" \
+              -e "NCP_STORAGE_ACCESS_KEY=${{ secrets.NCP_STORAGE_ACCESS_KEY }}" \
+              -e "NCP_STORAGE_SECRET_KEY=${{ secrets.NCP_STORAGE_SECRET_KEY }}" \
+              -e "NCP_BASE_URL=${{ secrets.NCP_BASE_URL }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
