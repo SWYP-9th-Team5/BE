@@ -66,4 +66,8 @@ public class Post extends BaseTimeEntity {
         this.categoryId = categoryId;
         this.userId = userId;
     }
+
+    public void changeState(PostState state) {
+        this.state = state;
+    }
 }
