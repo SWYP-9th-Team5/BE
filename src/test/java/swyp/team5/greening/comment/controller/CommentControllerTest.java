@@ -54,7 +54,6 @@ class CommentControllerTest extends ApiTestSupport {
         void setUp() {
             post = Post.builder()
                     .title("테스트")
-                    .content("테스트 게시물")
                     .likeCount(0L)
                     .commentCount(0L)
                     .state(PostState.IN_PROGRESS)
@@ -112,7 +111,6 @@ class CommentControllerTest extends ApiTestSupport {
 
             post = Post.builder()
                     .title("테스트")
-                    .content("테스트 게시물")
                     .likeCount(0L)
                     .commentCount(0L)
                     .state(PostState.IN_PROGRESS)
