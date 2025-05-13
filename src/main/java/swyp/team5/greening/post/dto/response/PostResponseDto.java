@@ -8,13 +8,18 @@ public record PostResponseDto(
     Long postId,
     String title,
     Long categoryId,
+    Long likeCount,
+    Long commentCount,
     List<ContentDto> content
+
 ) {
     public static PostResponseDto from(Post post) {
         return new PostResponseDto(
             post.getId(),
             post.getTitle(),
             post.getCategoryId(),
+            post.getLikeCount(),
+            post.getCommentCount(),
             post.getPostImages().stream()
                 .map(content -> new ContentDto(content.getType(), content.getContent()))
                 .toList()
