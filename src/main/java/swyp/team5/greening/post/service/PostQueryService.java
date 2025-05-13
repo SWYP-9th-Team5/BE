@@ -7,24 +7,20 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
 @Service
 @RequiredArgsConstructor
-public class PostDeleteService {
+public class PostQueryService {
 
     private final PostRepository postRepository;
 
-    @Transactional
-    public void deletePost(Long userId, Long postId) {
+    @Transactional(readOnly = true)
+    public PostResponseDto findPostDto(Long postId) {
         Post post = postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)
             .orElseThrow(() -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
-        if (!post.getUserId().equals(userId)) {
-            throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST); // 권한 예외 분리해도 됨
-        }
-
-        post.changeState(PostState.DELETED);
+        return PostResponseDto.from(post);
     }
-
 }

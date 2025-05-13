@@ -20,9 +20,9 @@ import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
-import swyp.team5.greening.post.service.PostCreateService;
-import swyp.team5.greening.post.service.PostDeleteService;
-import swyp.team5.greening.post.service.PostReadService;
+import swyp.team5.greening.post.service.PostCommandService;
+import swyp.team5.greening.post.service.PostQueryService;
+
 
 @Tag(name = "게시글 관련 API")
 @RestController
@@ -30,9 +30,8 @@ import swyp.team5.greening.post.service.PostReadService;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostCreateService postCreateService;
-    private final PostDeleteService postDeleteService;
-    private final PostReadService postReadService;
+    private final PostCommandService postCommandService;
+    private final PostQueryService postQueryService;
 
     @Operation(summary = "게시글 작성 API")
     @PostMapping
@@ -41,14 +40,14 @@ public class PostController {
         @LogIn Long userId,
         @Validated @RequestBody CreatePostRequestDto requestDto
     ) {
-        return ApiResponseDto.of(postCreateService.createPost(userId, requestDto));
+        return ApiResponseDto.of(postCommandService.createPost(userId, requestDto));
     }
 
     @Operation(summary = "게시글 단건 조회 API")
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<PostResponseDto> getPost(@PathVariable Long postId) {
-        return ApiResponseDto.of(postReadService.findPostDto(postId));
+        return ApiResponseDto.of(postQueryService.findPostDto(postId));
     }
 
     @Operation(summary = "게시글 삭제 API")
@@ -58,8 +57,7 @@ public class PostController {
         @LogIn Long userId,
         @PathVariable Long postId
     ) {
-        postDeleteService.deletePost(userId, postId);
+        postCommandService.deletePost(userId, postId);
     }
 
 }
-

@@ -1,10 +1,6 @@
 package swyp.team5.greening.post.service;
 
-
-import java.util.List;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
@@ -17,22 +13,21 @@ import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
-@Slf4j
+import java.util.List;
+import java.util.stream.IntStream;
+
 @Service
 @RequiredArgsConstructor
-public class PostCreateService {
+public class PostCommandService {
 
     private final PostRepository postRepository;
 
     @Transactional
     public CreatePostResponseDto createPost(Long userId, CreatePostRequestDto requestDto) {
-
-        // 예외 처리
         if (requestDto.title() == null || requestDto.content() == null || requestDto.content().isEmpty()) {
             throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST);
         }
 
-        // 게시글 객체 생성
         Post post = Post.builder()
             .title(requestDto.title())
             .userId(userId)
@@ -42,7 +37,6 @@ public class PostCreateService {
             .commentCount(0L)
             .build();
 
-        // 게시글 내용 리스트 생성
         List<PostContent> contents = IntStream.range(0, requestDto.content().size())
             .mapToObj(i -> {
                 var c = requestDto.content().get(i);
@@ -59,5 +53,17 @@ public class PostCreateService {
         Post saved = postRepository.save(post);
 
         return new CreatePostResponseDto(saved.getId());
+    }
+
+    @Transactional
+    public void deletePost(Long userId, Long postId) {
+        Post post = postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)
+            .orElseThrow(() -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
+
+        if (!post.getUserId().equals(userId)) {
+            throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST); // 권한 예외
+        }
+
+        post.delete();
     }
 }
