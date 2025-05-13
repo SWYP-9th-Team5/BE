@@ -4,6 +4,7 @@ package swyp.team5.greening.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -73,13 +74,19 @@ public class PostController {
     @Operation(summary = "카테고리별 게시글 목록 조회 (페이징)")
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<PostPaginationResponseDto> getPostsByCategory(
+    public ApiResponseDto<Map<String, Object>> getPostsByCategory(
         @LogIn Long userId,
         @RequestParam("category") Long categoryId,
         @RequestParam(value = "pageNumber", defaultValue = "0") int page,
         @RequestParam(value = "pageSize", defaultValue = "10") int size
     ) {
-        return ApiResponseDto.of(postQueryService.getPostsByCategory(categoryId, page, size, userId));
+        PostPaginationResponseDto response = postQueryService.getPostsByCategory(categoryId, page,
+            size, userId);
+
+        return ApiResponseDto.of(Map.of(
+            "post", response.posts(),
+            "pagination", response.paginationDto()
+        ));
     }
 
 }
