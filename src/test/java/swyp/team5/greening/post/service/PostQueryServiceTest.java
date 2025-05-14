@@ -112,7 +112,7 @@ class PostQueryServiceTest {
     @DisplayName("홈: 카테고리별 최신 게시글 6개 조회 성공")
     void getLatestPostByCategory_success() {
         Post post = mockPost(1L);
-        given(postRepository.findTop6ByCategoryIdAndStateOrderByCreatedAtDesc(anyLong(), eq(PostState.IN_PROGRESS)))
+        given(postRepository.findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(anyLong(), eq(PostState.IN_PROGRESS)))
             .willReturn(List.of(post));
 
         given(userRepository.findById(userId))

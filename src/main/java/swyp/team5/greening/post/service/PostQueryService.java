@@ -38,7 +38,7 @@ public class PostQueryService {
     public List<PostPreviewResponseDto> getLatestPostByCategory(Long userId) {
         return List.of(1L, 2L, 3L).stream()
             .flatMap(categoryId ->
-                postRepository.findTop6ByCategoryIdAndStateOrderByCreatedAtDesc(categoryId, PostState.IN_PROGRESS)
+                postRepository.findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(categoryId, PostState.IN_PROGRESS)
                     .stream()
                     .map(post -> {
                         String userName = userRepository.findById(post.getUserId())

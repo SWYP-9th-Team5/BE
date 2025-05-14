@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 
@@ -17,7 +19,18 @@ public interface PostRepository {
 
     Optional<Post> findByIdAndState(Long postId, PostState state);
 //    List<Post> findAllByState(PostState state); // 전체 조회 기능
-    List<Post> findTop6ByCategoryIdAndStateOrderByCreatedAtDesc(Long categoryId, PostState state);
+//    List<Post> findTop6ByCategoryIdAndStateOrderByCreatedAtDesc(Long categoryId, PostState state);
+    @Query("""
+        SELECT p FROM Post p
+        WHERE p.categoryId = :categoryId
+          AND p.state = :state
+          AND FUNCTION('DATE', p.createdAt) = CURRENT_DATE
+        ORDER BY p.likeCount DESC
+    """)
+    List<Post> findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(
+        @Param("categoryId") Long categoryId,
+        @Param("state") PostState state
+    );
     Page<Post> findAllByCategoryIdAndStateOrderByCreatedAtDesc(Long categoryId, PostState state, Pageable pageable);
 
 }
