@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,12 +74,12 @@ public class PostController {
     @Operation(summary = "카테고리별 게시글 목록 조회 (페이징)")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<PaginationApiResponseDto<PostPreviewResponseDto>> getPostsByCategory(
+    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(
         @RequestParam("category") String categoryName,
         @RequestParam(value = "pageNumber", defaultValue = "0") int page,
         @RequestParam(value = "pageSize", defaultValue = "10") int size
     ) {
-        return ApiResponseDto.of(
+        return PaginationApiResponseDto.of(
             postQueryService.getPostsByCategory(categoryName, page, size)
         );
     }
