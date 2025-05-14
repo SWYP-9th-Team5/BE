@@ -11,10 +11,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "mbti_answers")
+@Getter
+@NoArgsConstructor
 public class MbtiAnswer extends BaseTimeEntity {
 
     @Id
@@ -40,4 +45,19 @@ public class MbtiAnswer extends BaseTimeEntity {
     @JoinColumn(name = "mbti_question_id")
     private MbtiQuestion mbtiQuestion;
 
+    @Builder
+    public MbtiAnswer(
+            String answer,
+            MbtiAnswerType answerType,
+            String imageUrl,
+            MbtiEach mbtiEach,
+            MbtiQuestion mbtiQuestion
+    ) {
+        this.answer = answer;
+        this.answerType = answerType;
+        this.imageUrl = imageUrl;
+        this.mbtiEach = mbtiEach;
+        this.mbtiQuestion = mbtiQuestion;
+        mbtiQuestion.getAnswers().add(this);
+    }
 }

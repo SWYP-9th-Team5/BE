@@ -10,12 +10,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "mbti_questions")
 @Getter
+@NoArgsConstructor
 public class MbtiQuestion extends BaseTimeEntity {
 
     @Id
@@ -32,4 +35,9 @@ public class MbtiQuestion extends BaseTimeEntity {
     @OneToMany(mappedBy = "mbtiQuestion", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final List<MbtiAnswer> answers = new ArrayList<>();
 
+    @Builder
+    public MbtiQuestion(String questionText, Integer sequence) {
+        this.questionText = questionText;
+        this.sequence = sequence;
+    }
 }
