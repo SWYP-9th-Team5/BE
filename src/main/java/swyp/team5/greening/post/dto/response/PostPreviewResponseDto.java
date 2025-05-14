@@ -44,7 +44,7 @@ public record PostPreviewResponseDto(
 
     // Post 객체 + userName 기반 from 메서드 (N+1 방지용)
     public static PostPreviewResponseDto from(Post post, boolean isLike, String userName) {
-        PostContent firstContent = post.getPostImages().stream()
+        PostContent firstContent = post.getPostContents().stream()
             .sorted(Comparator.comparing(PostContent::getSequence))
             .findFirst()
             .orElse(null);

@@ -49,7 +49,7 @@ public class PostCommandService {
             })
             .toList();
 
-        post.getPostImages().addAll(contents);
+        post.getPostContents().addAll(contents);
         Post saved = postRepository.save(post);
 
         return new CreatePostResponseDto(saved.getId());

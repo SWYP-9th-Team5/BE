@@ -48,7 +48,7 @@ public class Post extends BaseTimeEntity {
     private Long userId;
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    private final List<PostContent> postImages = new ArrayList<>();
+    private final List<PostContent> postContents = new ArrayList<>();
 
     @Builder
     public Post(

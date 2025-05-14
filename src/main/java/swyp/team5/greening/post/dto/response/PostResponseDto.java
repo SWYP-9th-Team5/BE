@@ -20,7 +20,7 @@ public record PostResponseDto(
             post.getCategoryId(),
             post.getLikeCount(),
             post.getCommentCount(),
-            post.getPostImages().stream()
+            post.getPostContents().stream()
                 .map(content -> new ContentDto(content.getType(), content.getContent()))
                 .toList()
         );
