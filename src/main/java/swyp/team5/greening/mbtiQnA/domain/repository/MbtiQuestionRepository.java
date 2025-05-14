@@ -5,6 +5,10 @@ import swyp.team5.greening.mbtiQnA.domain.entity.MbtiQuestion;
 
 public interface MbtiQuestionRepository {
 
+    MbtiQuestion save(MbtiQuestion mbtiQuestion);
+
     List<MbtiQuestion> findAllByOrderBySequenceAsc();
+
+    void deleteAll();
 
 }
