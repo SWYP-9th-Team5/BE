@@ -8,9 +8,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
+@Getter
+@NoArgsConstructor
 @Table(name = "category")
 public class Category extends BaseTimeEntity {
 
@@ -23,4 +27,8 @@ public class Category extends BaseTimeEntity {
     @Column(name = "category_type")
     private CategoryType categoryType;
 
+
+    public Category(CategoryType categoryType) {
+        this.categoryType = categoryType;
+    }
 }

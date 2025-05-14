@@ -67,7 +67,7 @@ public class Post extends BaseTimeEntity {
         this.userId = userId;
     }
 
-    public void changeState(PostState state) {
-        this.state = state;
+    public void delete() {
+        this.state = PostState.DELETED;
     }
 }
