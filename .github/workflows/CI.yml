@@ -10,6 +10,24 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
+    # 변수 설정
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_ACCESS_EXPIRY: ${{ secrets.JWT_ACCESS_EXPIRY }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+      KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
+      NCP_BUCKET: ${{ secrets.NCP_BUCKET }}
+      NCP_STORAGE_ACCESS_KEY: ${{ secrets.NCP_STORAGE_ACCESS_KEY }}
+      NCP_STORAGE_SECRET_KEY: ${{ secrets.NCP_STORAGE_SECRET_KEY }}
+      NCP_BASE_URL: ${{ secrets.NCP_BASE_URL }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -28,27 +46,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-      # 빌드
+      # 빌드 및 테스트
       - name: Build with Gradle Wrapper
-        env:
-          DB_URL: ${{ secrets.DB_URL }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          JWT_ACCESS_EXPIRY: ${{ secrets.JWT_ACCESS_EXPIRY }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-          KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
-          NCP_BUCKET: ${{ secrets.NCP_BUCKET }}
-          NCP_STORAGE_ACCESS_KEY: ${{ secrets.NCP_STORAGE_ACCESS_KEY }}
-          NCP_STORAGE_SECRET_KEY: ${{ secrets.NCP_STORAGE_SECRET_KEY }}
-          NCP_BASE_URL: ${{ secrets.NCP_BASE_URL }}
         run: ./gradlew build
-
-      # 테스트
-      - name: test CI
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: clean test
