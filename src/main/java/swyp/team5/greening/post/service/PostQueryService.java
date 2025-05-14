@@ -53,7 +53,9 @@ public class PostQueryService {
 
     // 카테고리 조회
     @Transactional(readOnly = true)
-    public Page<PostPreviewResponseDto> getPostsByCategory(String categoryName, int page, int size) {
+    public Page<PostPreviewResponseDto> getPostsByCategory(
+            String categoryName,
+            Integer pageNumber, Integer pageSize) {
         CategoryType categoryType;
         try {
             categoryType = CategoryType.valueOf(categoryName.toUpperCase());
@@ -66,7 +68,7 @@ public class PostQueryService {
             .orElseThrow(
                 () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
 
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
         Page<PostUserNameProjection> postPage = postRepository.findAllByCategoryWithUserName(
             categoryId,

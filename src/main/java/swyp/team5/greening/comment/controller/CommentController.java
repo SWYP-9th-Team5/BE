@@ -49,7 +49,7 @@ public class CommentController {
         return ApiResponseDto.of(commentCommandService.saveComment(userId, requestDto));
     }
 
-    @Operation(summary = "게시물 댓글 목록 조회 API")
+    @Operation(summary = "게시물 댓글 목록 조회 API (pageNumber는 1부터 시작)")
     @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PaginationApiResponseDto<FindAllCommentResponseDto> getAllComment(
