@@ -24,6 +24,9 @@ import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
+import swyp.team5.greening.postCategory.domain.entity.Category;
+import swyp.team5.greening.postCategory.domain.entity.CategoryType;
+import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
 import swyp.team5.greening.user.domain.entity.User;
 import swyp.team5.greening.user.domain.repository.UserRepository;
 
@@ -36,6 +39,9 @@ class PostQueryServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @InjectMocks
     private PostQueryService postQueryService;
@@ -68,6 +74,12 @@ class PostQueryServiceTest {
         return user;
     }
 
+    private Category mockCategory(Long id) {
+        Category category = new Category();
+        ReflectionTestUtils.setField(category, "id", id);
+        return category;
+    }
+
     @Test
     @DisplayName("게시글 단건 조회 성공")
     void findPost_success() {
@@ -93,8 +105,13 @@ class PostQueryServiceTest {
     @Test
     @DisplayName("카테고리별 게시글 목록 조회 (페이징 포함)")
     void getPostsByCategory_success() {
+        String categoryName = "SHARING";
         Post post = mockPost(1L);
         Page<Post> page = new PageImpl<>(List.of(post));
+
+        given(categoryRepository.findByCategoryType(CategoryType.SHARING))
+            .willReturn(Optional.of(mockCategory(categoryId)));
+
         given(postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(eq(categoryId), eq(PostState.IN_PROGRESS), any(PageRequest.class)))
             .willReturn(page);
 
@@ -102,7 +119,7 @@ class PostQueryServiceTest {
             .willReturn(Optional.of(mockUser(post.getUserId(), "테스트유저")));
 
         PaginationApiResponseDto<PostPreviewResponseDto> result =
-            postQueryService.getPostsByCategory(categoryId, 0, 10, userId);
+            postQueryService.getPostsByCategory(categoryName, 0, 10);
 
         assertThat(result.data()).hasSize(1);
         assertThat(result.data().get(0).userName()).isEqualTo("테스트유저");

@@ -2,6 +2,9 @@ package swyp.team5.greening.post.service;
 
 import java.util.List;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
+import swyp.team5.greening.postCategory.domain.entity.CategoryType;
+import swyp.team5.greening.postCategory.domain.entity.Category;
+import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
 import swyp.team5.greening.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,7 @@ public class PostQueryService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     // 단일 조회
     @Transactional(readOnly = true)
@@ -35,7 +39,7 @@ public class PostQueryService {
 
     // 최신 게시글 6개씩 카테고리별로 조회
     @Transactional(readOnly = true)
-    public List<PostPreviewResponseDto> getLatestPostByCategory(Long userId) {
+    public List<PostPreviewResponseDto> getLatestPostByCategory() {
         return List.of(1L, 2L, 3L).stream()
             .flatMap(categoryId ->
                 postRepository.findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(categoryId, PostState.IN_PROGRESS)
@@ -51,9 +55,22 @@ public class PostQueryService {
 
     // 카테고리 조회
     @Transactional(readOnly = true)
-    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(Long categoryId, int page, int size, Long userId) {
+    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(String categoryName, int page, int size) {
+        CategoryType categoryType;
+        try {
+            categoryType = CategoryType.valueOf(categoryName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY);
+        }
+
+        Long categoryId = categoryRepository.findByCategoryType(categoryType)
+            .map(Category::getId)
+            .orElseThrow(
+                () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
+
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Post> posts = postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(categoryId, PostState.IN_PROGRESS, pageRequest);
+        Page<Post> posts = postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(
+            categoryId, PostState.IN_PROGRESS, pageRequest);
 
         Page<PostPreviewResponseDto> dtoPage = posts.map(post -> {
             String userName = userRepository.findById(post.getUserId())

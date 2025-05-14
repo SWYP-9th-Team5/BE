@@ -21,11 +21,11 @@ public interface PostRepository {
 //    List<Post> findAllByState(PostState state); // 전체 조회 기능
 //    List<Post> findTop6ByCategoryIdAndStateOrderByCreatedAtDesc(Long categoryId, PostState state);
     @Query("""
-        SELECT p FROM Post p
-        WHERE p.categoryId = :categoryId
-          AND p.state = :state
-          AND FUNCTION('DATE', p.createdAt) = CURRENT_DATE
-        ORDER BY p.likeCount DESC
+        SELECT a FROM Post a
+        WHERE a.categoryId = :categoryId
+          AND a.state = :state
+          AND FUNCTION('DATE', a.createdAt) = CURRENT_DATE
+        ORDER BY a.likeCount DESC
     """)
     List<Post> findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(
         @Param("categoryId") Long categoryId,

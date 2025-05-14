@@ -4,7 +4,6 @@ package swyp.team5.greening.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -67,21 +66,20 @@ public class PostController {
     @Operation(summary = "홈 화면 게시글 미리보기 (카테고리 별 각 6개씩)")
     @GetMapping("/home")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<PostPreviewResponseDto>> getLatestPosts(@LogIn Long userId) {
-        return ApiResponseDto.of(postQueryService.getLatestPostByCategory(userId));
+    public ApiResponseDto<List<PostPreviewResponseDto>> getLatestPosts() {
+        return ApiResponseDto.of(postQueryService.getLatestPostByCategory());
     }
 
     @Operation(summary = "카테고리별 게시글 목록 조회 (페이징)")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<PaginationApiResponseDto<PostPreviewResponseDto>> getPostsByCategory(
-        @LogIn Long userId,
-        @RequestParam("category") Long categoryId,
+        @RequestParam("category") String categoryName,
         @RequestParam(value = "pageNumber", defaultValue = "0") int page,
         @RequestParam(value = "pageSize", defaultValue = "10") int size
     ) {
         return ApiResponseDto.of(
-            postQueryService.getPostsByCategory(categoryId, page, size, userId)
+            postQueryService.getPostsByCategory(categoryName, page, size)
         );
     }
 }
