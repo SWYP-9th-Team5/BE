@@ -1,9 +1,11 @@
-name: CI/CD (docker -> ncp)
+name: CD (docker -> ncp)
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ "develop", "main" ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
