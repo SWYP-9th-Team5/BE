@@ -72,7 +72,7 @@ public class PostController {
     }
 
     @Operation(summary = "카테고리별 게시글 목록 조회 (페이징)")
-    @GetMapping("/")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<Map<String, Object>> getPostsByCategory(
         @LogIn Long userId,
