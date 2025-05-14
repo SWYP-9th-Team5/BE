@@ -1,7 +1,10 @@
 package swyp.team5.greening.post.service;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
+import swyp.team5.greening.post.dto.PostUserNameProjection;
 import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 import swyp.team5.greening.postCategory.domain.entity.Category;
 import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
@@ -42,20 +45,15 @@ public class PostQueryService {
     public List<PostPreviewResponseDto> getLatestPostByCategory() {
         return List.of(1L, 2L, 3L).stream()
             .flatMap(categoryId ->
-                postRepository.findTop6TodayByCategoryIdAndStateOrderByLikeCountDesc(categoryId, PostState.IN_PROGRESS)
-                    .stream()
-                    .map(post -> {
-                        String userName = userRepository.findById(post.getUserId())
-                            .map(User::getUserName)
-                            .orElse("탈퇴한 사용자");
-                        return PostPreviewResponseDto.from(post, false, userName);
-                    }))
+                postRepository.findTop6TodayByCategoryWithUserName(categoryId).stream()
+                    .map(proj -> PostPreviewResponseDto.from(proj, false))
+            )
             .toList();
     }
 
     // 카테고리 조회
     @Transactional(readOnly = true)
-    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(String categoryName, int page, int size) {
+    public Page<PostPreviewResponseDto> getPostsByCategory(String categoryName, int page, int size) {
         CategoryType categoryType;
         try {
             categoryType = CategoryType.valueOf(categoryName.toUpperCase());
@@ -69,16 +67,13 @@ public class PostQueryService {
                 () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Post> posts = postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(
-            categoryId, PostState.IN_PROGRESS, pageRequest);
 
-        Page<PostPreviewResponseDto> dtoPage = posts.map(post -> {
-            String userName = userRepository.findById(post.getUserId())
-                .map(User::getUserName)
-                .orElse("탈퇴한 사용자");
-            return PostPreviewResponseDto.from(post, false, userName);
-        });
+        Page<PostUserNameProjection> postPage = postRepository.findAllByCategoryWithUserName(
+            categoryId,
+            PostState.IN_PROGRESS.name(),
+            pageRequest
+        );
 
-        return PaginationApiResponseDto.of(dtoPage);
+        return postPage.map(proj -> PostPreviewResponseDto.from(proj, false));
     }
 }
