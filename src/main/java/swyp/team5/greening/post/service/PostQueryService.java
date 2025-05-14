@@ -1,6 +1,7 @@
 package swyp.team5.greening.post.service;
 
 import java.util.List;
+import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,8 +12,6 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
-import swyp.team5.greening.post.dto.response.PaginationDto;
-import swyp.team5.greening.post.dto.response.PostPaginationResponseDto;
 import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
@@ -52,26 +51,17 @@ public class PostQueryService {
 
     // 카테고리 조회
     @Transactional(readOnly = true)
-    public PostPaginationResponseDto getPostsByCategory(Long categoryId, int page, int size, Long userId) {
+    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(Long categoryId, int page, int size, Long userId) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Post> posts = postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(categoryId, PostState.IN_PROGRESS, pageRequest);
 
-        List<PostPreviewResponseDto> data = posts.getContent().stream()
-            .map(post -> {
-                String userName = userRepository.findById(post.getUserId())
-                    .map(User::getUserName)
-                    .orElse("탈퇴한 사용자");
-                return PostPreviewResponseDto.from(post, false, userName);
-            })
-            .toList();
+        Page<PostPreviewResponseDto> dtoPage = posts.map(post -> {
+            String userName = userRepository.findById(post.getUserId())
+                .map(User::getUserName)
+                .orElse("탈퇴한 사용자");
+            return PostPreviewResponseDto.from(post, false, userName);
+        });
 
-        PaginationDto pagination = new PaginationDto(
-            posts.getNumber(),
-            posts.getSize(),
-            posts.getTotalPages(),
-            posts.getTotalElements()
-        );
-
-        return new PostPaginationResponseDto(data, pagination);
+        return PaginationApiResponseDto.of(dtoPage);
     }
 }

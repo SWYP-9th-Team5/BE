@@ -16,11 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
+import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
-import swyp.team5.greening.post.dto.response.PostPaginationResponseDto;
+import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.user.domain.entity.User;
@@ -94,15 +95,14 @@ class PostQueryServiceTest {
     void getPostsByCategory_success() {
         Post post = mockPost(1L);
         Page<Post> page = new PageImpl<>(List.of(post));
-
-        given(postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(eq(categoryId), eq(PostState.IN_PROGRESS), any(
-            PageRequest.class)))
+        given(postRepository.findAllByCategoryIdAndStateOrderByCreatedAtDesc(eq(categoryId), eq(PostState.IN_PROGRESS), any(PageRequest.class)))
             .willReturn(page);
 
         given(userRepository.findById(post.getUserId()))
             .willReturn(Optional.of(mockUser(post.getUserId(), "테스트유저")));
 
-        PostPaginationResponseDto result = postQueryService.getPostsByCategory(categoryId, 0, 10, userId);
+        PaginationApiResponseDto<PostPreviewResponseDto> result =
+            postQueryService.getPostsByCategory(categoryId, 0, 10, userId);
 
         assertThat(result.data()).hasSize(1);
         assertThat(result.data().get(0).userName()).isEqualTo("테스트유저");

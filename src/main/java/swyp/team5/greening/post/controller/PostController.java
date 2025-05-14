@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
+import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
-import swyp.team5.greening.post.dto.response.PostPaginationResponseDto;
 import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.service.PostCommandService;
@@ -74,19 +74,14 @@ public class PostController {
     @Operation(summary = "카테고리별 게시글 목록 조회 (페이징)")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<Map<String, Object>> getPostsByCategory(
+    public ApiResponseDto<PaginationApiResponseDto<PostPreviewResponseDto>> getPostsByCategory(
         @LogIn Long userId,
         @RequestParam("category") Long categoryId,
         @RequestParam(value = "pageNumber", defaultValue = "0") int page,
         @RequestParam(value = "pageSize", defaultValue = "10") int size
     ) {
-        PostPaginationResponseDto response = postQueryService.getPostsByCategory(categoryId, page,
-            size, userId);
-
-        return ApiResponseDto.of(Map.of(
-            "post", response.posts(),
-            "pagination", response.paginationDto()
-        ));
+        return ApiResponseDto.of(
+            postQueryService.getPostsByCategory(categoryId, page, size, userId)
+        );
     }
-
 }
