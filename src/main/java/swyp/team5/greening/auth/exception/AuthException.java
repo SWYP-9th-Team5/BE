@@ -5,7 +5,7 @@ import swyp.team5.greening.common.exception.ExceptionMessage;
 
 //인증 인가에서 사용되는 예외 클래스
 @Getter
-public class AuthException extends RuntimeException{
+public class AuthException extends RuntimeException {
 
     private final String code;
 

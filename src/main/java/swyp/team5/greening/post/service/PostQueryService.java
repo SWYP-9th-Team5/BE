@@ -1,14 +1,6 @@
 package swyp.team5.greening.post.service;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
-import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
-import swyp.team5.greening.post.dto.PostUserNameProjection;
-import swyp.team5.greening.postCategory.domain.entity.CategoryType;
-import swyp.team5.greening.postCategory.domain.entity.Category;
-import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
-import swyp.team5.greening.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +10,13 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.dto.PostUserNameProjection;
 import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
+import swyp.team5.greening.postCategory.domain.entity.Category;
+import swyp.team5.greening.postCategory.domain.entity.CategoryType;
+import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
 import swyp.team5.greening.user.domain.repository.UserRepository;
 
 @Service
@@ -35,7 +31,8 @@ public class PostQueryService {
     @Transactional(readOnly = true)
     public PostResponseDto findPostDto(Long postId) {
         Post post = postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)
-            .orElseThrow(() -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
+                .orElseThrow(
+                        () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
         return PostResponseDto.from(post);
     }
@@ -44,11 +41,11 @@ public class PostQueryService {
     @Transactional(readOnly = true)
     public List<PostPreviewResponseDto> getLatestPostByCategory() {
         return List.of(1L, 2L, 3L).stream()
-            .flatMap(categoryId ->
-                postRepository.findTop6TodayByCategoryWithUserName(categoryId).stream()
-                    .map(proj -> PostPreviewResponseDto.from(proj, false))
-            )
-            .toList();
+                .flatMap(categoryId ->
+                        postRepository.findTop6TodayByCategoryWithUserName(categoryId).stream()
+                                .map(proj -> PostPreviewResponseDto.from(proj, false))
+                )
+                .toList();
     }
 
     // 카테고리 조회
@@ -64,16 +61,16 @@ public class PostQueryService {
         }
 
         Long categoryId = categoryRepository.findByCategoryType(categoryType)
-            .map(Category::getId)
-            .orElseThrow(
-                () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
+                .map(Category::getId)
+                .orElseThrow(
+                        () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
 
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
         Page<PostUserNameProjection> postPage = postRepository.findAllByCategoryWithUserName(
-            categoryId,
-            PostState.IN_PROGRESS.name(),
-            pageRequest
+                categoryId,
+                PostState.IN_PROGRESS.name(),
+                pageRequest
         );
 
         return postPage.map(proj -> PostPreviewResponseDto.from(proj, false));

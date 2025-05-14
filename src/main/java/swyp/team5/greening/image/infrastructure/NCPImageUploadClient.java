@@ -32,7 +32,7 @@ public class NCPImageUploadClient {
 
         for (MultipartFile image : images) {
             String imageUrl = uploadImage(image);
-            result.add(BASE_URL+"/"+imageUrl);
+            result.add(BASE_URL + "/" + imageUrl);
         }
 
         return result;
@@ -56,8 +56,7 @@ public class NCPImageUploadClient {
                     putObjectRequest,
                     RequestBody.fromInputStream(image.getInputStream(), image.getSize())
             );
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("{} 이미지 업로드 실패", image.getOriginalFilename());
             log.error(e.getMessage());
         }

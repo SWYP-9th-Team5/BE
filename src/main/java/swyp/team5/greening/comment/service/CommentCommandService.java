@@ -12,9 +12,9 @@ import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.exception.CommentExceptionMessage;
-import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.exception.PostExceptionMessage;
 
 @Slf4j
 @Service

@@ -42,8 +42,8 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<CreatePostResponseDto> createPost(
-        @LogIn Long userId,
-        @Validated @RequestBody CreatePostRequestDto requestDto
+            @LogIn Long userId,
+            @Validated @RequestBody CreatePostRequestDto requestDto
     ) {
         return ApiResponseDto.of(postCommandService.createPost(userId, requestDto));
     }
@@ -59,8 +59,8 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(
-        @LogIn Long userId,
-        @PathVariable Long postId
+            @LogIn Long userId,
+            @PathVariable Long postId
     ) {
         postCommandService.deletePost(userId, postId);
     }
@@ -76,8 +76,8 @@ public class PostController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(
-        @RequestParam("category") String categoryName,
-        @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
+            @RequestParam("category") String categoryName,
+            @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
     ) {
         return PaginationApiResponseDto.of(
                 postQueryService.getPostsByCategory(categoryName,

@@ -23,9 +23,9 @@ import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.service.CommentCommandService;
 import swyp.team5.greening.comment.service.CommentQueryService;
 import swyp.team5.greening.common.dto.request.PaginationRequestDto;
-import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
+import swyp.team5.greening.common.resolver.LogIn;
 
 @Tag(name = "댓글 관련 API")
 @RestController

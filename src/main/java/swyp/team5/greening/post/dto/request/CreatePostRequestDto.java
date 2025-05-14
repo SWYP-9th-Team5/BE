@@ -7,21 +7,24 @@ import java.util.List;
 
 public record CreatePostRequestDto(
 
-    @NotEmpty
-    String title,
+        @NotEmpty
+        String title,
 
-    @NotNull
-    Long categoryId,
+        @NotNull
+        Long categoryId,
 
-    @NotEmpty
-    List<ContentDto> content
+        @NotEmpty
+        List<ContentDto> content
 
 ) {
-    public record ContentDto(
-        @NotEmpty
-        String type,
 
-        @NotEmpty
-        String value
-    ) {}
+    public record ContentDto(
+            @NotEmpty
+            String type,
+
+            @NotEmpty
+            String value
+    ) {
+
+    }
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swyp.team5.greening.comment.domain.repository.CommentQueryRepository;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
-import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.exception.PostExceptionMessage;
 
 @Service
 @RequiredArgsConstructor

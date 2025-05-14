@@ -1,8 +1,8 @@
 package swyp.team5.greening.postCategory.domain.entity;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import java.util.Arrays;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
@@ -18,9 +18,9 @@ public enum CategoryType {
 
     public static CategoryType fromDescription(String description) {
         return Arrays.stream(CategoryType.values())
-            .filter(type -> type.getDescription().equalsIgnoreCase(description))
-            .findFirst()
-            .orElseThrow(
-                () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
+                .filter(type -> type.getDescription().equalsIgnoreCase(description))
+                .findFirst()
+                .orElseThrow(
+                        () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_CATEGORY));
     }
 }
