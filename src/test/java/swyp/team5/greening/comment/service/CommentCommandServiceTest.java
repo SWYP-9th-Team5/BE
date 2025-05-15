@@ -20,6 +20,8 @@ import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.exception.CommentExceptionMessage;
+import swyp.team5.greening.post.domain.entity.Post;
+import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
@@ -43,7 +45,17 @@ class CommentCommandServiceTest {
 
         Long userId = 1L;
         Long postId = 2L;
+        Long commentId = 3L;
         String comment = "댓글입니다~";
+
+        Post postEntity = Post.builder()
+                .title("ㅎㅎ")
+                .likeCount(0L)
+                .commentCount(0L)
+                .state(PostState.IN_PROGRESS)
+                .categoryId(1L)
+                .userId(userId)
+                .build();
 
         Comment commentEntity = Comment.builder()
                 .postId(postId)
@@ -52,28 +64,30 @@ class CommentCommandServiceTest {
                 .build();
 
         @Test
-        @DisplayName("사용자는 게시물에 댓글을 작성할 수 있다.")
+        @DisplayName("사용자는 게시물에 댓글을 작성할 수 있다. 이 때 게시물의 댓글 수가 증가한다.")
         void testCase1() {
             //given
-            given(postRepository.existsById(postId)).willReturn(true);
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.of(postEntity));
             given(commentRepository.save(any(Comment.class))).willReturn(commentEntity);
-            ReflectionTestUtils.setField(commentEntity, "id", 3L);
+            ReflectionTestUtils.setField(postEntity, "id", postId);
+            ReflectionTestUtils.setField(commentEntity, "id", commentId);
 
             //when
             SaveCommentResponseDto responseDto = commentCommandService.saveComment(
                     userId, new SaveCommentRequestDto(postId, comment));
 
             //then
-            verify(postRepository).existsById(postId);
+            verify(postRepository).findByIdAndState(postId, PostState.IN_PROGRESS);
             verify(commentRepository).save(any(Comment.class));
             assertThat(responseDto.id()).isEqualTo(commentEntity.getId());
+            assertThat(postEntity.getCommentCount()).isEqualTo(1L);
         }
 
         @Test
         @DisplayName("게시물이 존재하지 않을 경우, 예외가 발생한다.")
         void testCase2() {
             //given
-            given(postRepository.existsById(postId)).willReturn(false);
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.empty());
 
             //when
             ThrowingCallable when = () -> commentCommandService.saveComment(userId, new SaveCommentRequestDto(postId, comment));
@@ -95,6 +109,15 @@ class CommentCommandServiceTest {
         Long commentId = 2L;
         String comment = "테스트 댓글입니다";
         String newComment = "수정한 댓글입니다";
+
+        Post postEntity = Post.builder()
+                .title("ㅎㅎ")
+                .likeCount(0L)
+                .commentCount(1L)
+                .state(PostState.IN_PROGRESS)
+                .categoryId(1L)
+                .userId(userId)
+                .build();
 
         Comment testComment = Comment.builder()
                 .postId(postId)
@@ -134,9 +157,10 @@ class CommentCommandServiceTest {
         }
 
         @Test
-        @DisplayName("댓글 삭제할 수 있다.")
+        @DisplayName("댓글 삭제할 수 있다. 이 때 게시글의 댓글 수는 감소한다.")
         void testCase3() {
             //given
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.of(postEntity));
             given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
 
             //when
@@ -145,6 +169,7 @@ class CommentCommandServiceTest {
 
             //then
             verify(commentRepository, times(1)).deleteById(commentId);
+            assertThat(postEntity.getCommentCount()).isZero();
         }
     }
 }
