@@ -20,10 +20,11 @@ import swyp.team5.greening.common.dto.request.PaginationRequestDto;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
+import swyp.team5.greening.common.resolver.OptionalLogIn;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
-import swyp.team5.greening.post.dto.response.PostResponseDto;
+import swyp.team5.greening.post.dto.response.FindPostResponseDto;
 import swyp.team5.greening.post.service.PostCommandService;
 import swyp.team5.greening.post.service.PostQueryService;
 
@@ -49,8 +50,11 @@ public class PostController {
     @Operation(summary = "게시글 단건 조회 API")
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<PostResponseDto> getPost(@PathVariable Long postId) {
-        return ApiResponseDto.of(postQueryService.findPostDto(postId));
+    public ApiResponseDto<FindPostResponseDto> getPost(
+            @OptionalLogIn Long userId,
+            @PathVariable Long postId
+    ) {
+        return ApiResponseDto.of(postQueryService.findPost(postId, userId));
     }
 
     @Operation(summary = "게시글 삭제 API")
