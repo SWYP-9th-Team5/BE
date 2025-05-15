@@ -3,7 +3,6 @@ package swyp.team5.greening.post.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,20 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
-import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
+import swyp.team5.greening.post.domain.repository.PostQueryRepository;
 import swyp.team5.greening.post.domain.repository.PostRepository;
-import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
-import swyp.team5.greening.post.dto.response.PostResponseDto;
+import swyp.team5.greening.post.dto.response.FindPostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 import swyp.team5.greening.postCategory.domain.entity.Category;
-import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 import swyp.team5.greening.postCategory.domain.repository.CategoryRepository;
 import swyp.team5.greening.user.domain.entity.User;
 import swyp.team5.greening.user.domain.repository.UserRepository;
@@ -35,10 +29,7 @@ import swyp.team5.greening.user.domain.repository.UserRepository;
 class PostQueryServiceTest {
 
     @Mock
-    private PostRepository postRepository;
-
-    @Mock
-    private UserRepository userRepository;
+    private PostQueryRepository postQueryRepository;
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -80,27 +71,6 @@ class PostQueryServiceTest {
         return category;
     }
 
-    @Test
-    @DisplayName("게시글 단건 조회 성공")
-    void findPost_success() {
-        Post post = mockPost(200L);
-        given(postRepository.findByIdAndState(200L, PostState.IN_PROGRESS)).willReturn(Optional.of(post));
-
-        PostResponseDto result = postQueryService.findPostDto(200L);
-
-        assertThat(result.postId()).isEqualTo(200L);
-        assertThat(result.title()).isEqualTo(title);
-    }
-
-    @Test
-    @DisplayName("게시글 단건 조회 실패")
-    void findPost_notFound() {
-        given(postRepository.findByIdAndState(999L, PostState.IN_PROGRESS)).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> postQueryService.findPostDto(999L))
-            .isInstanceOf(GreeningGlobalException.class)
-            .hasMessage(PostExceptionMessage.NOT_FOUND_POST.getMessage());
-    }
 
 //    @Test
 //    @DisplayName("카테고리별 게시글 목록 조회 (페이징 포함)")

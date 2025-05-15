@@ -6,10 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "likes")
+@NoArgsConstructor
 public class Like extends BaseTimeEntity {
 
     @Id
@@ -23,4 +26,9 @@ public class Like extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long postId;
 
+    @Builder
+    public Like(Long userId, Long postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
 }
