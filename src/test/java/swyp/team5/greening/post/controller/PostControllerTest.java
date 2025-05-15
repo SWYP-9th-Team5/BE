@@ -22,6 +22,8 @@ import swyp.team5.greening.postLike.domain.entity.Like;
 import swyp.team5.greening.postLike.domain.repository.LikeRepository;
 import swyp.team5.greening.postLike.fixture.LikeFixture;
 import swyp.team5.greening.support.ApiTestSupport;
+import swyp.team5.greening.user.domain.entity.User;
+import swyp.team5.greening.user.domain.repository.UserRepository;
 
 @DisplayName("게시글 통합 테스트")
 @AutoConfigureMockMvc
@@ -32,6 +34,9 @@ class PostControllerTest extends ApiTestSupport {
 
     @Autowired
     private LikeRepository likeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void init() {
@@ -94,7 +99,7 @@ class PostControllerTest extends ApiTestSupport {
 
         @Test
         @DisplayName("사용자는 게시글을 단건 조회할 수 있다.")
-        void getSinglePost() throws Exception {
+        void getPost() throws Exception {
             // when
             ResultActions result = mockMvc.perform(get("/api/posts/{id}", post.getId())
                     .header(HttpHeaders.AUTHORIZATION, accessToken));
@@ -117,6 +122,108 @@ class PostControllerTest extends ApiTestSupport {
 
             // then
             result.andExpect(status().isNoContent());
+        }
+    }
+
+    @DisplayName("게시글이 2개 존재한다. 로그인 유저가 다른 사람이 쓴 글을 좋아요 한 상태이다.")
+    @Nested
+    class TestCase3 {
+
+        User anotherUser;
+        String anotherName = "다른 유저";
+        Post post;
+        Post anotherPost;
+        Like like;
+        Like anotherLike;
+
+        @BeforeEach
+        void setUp() {
+            anotherUser = User.builder()
+                    .userName(anotherName)
+                    .build();
+            userRepository.save(anotherUser);
+
+            post = PostFixture.getPost(loginUser.getId());
+            postRepository.save(post);
+
+            anotherPost = PostFixture.getPost(anotherUser.getId());
+            postRepository.save(anotherPost);
+
+            like = LikeFixture.getLike(anotherPost.getId(), loginUser.getId());
+            likeRepository.save(like);
+
+            anotherLike = LikeFixture.getLike(post.getId(), anotherUser.getId());
+            likeRepository.save(anotherLike);
+        }
+
+        @Test
+        @DisplayName("홈 화면에서 조회한 글들이 올바르게 나타난다.")
+        void getLatestPosts() throws Exception {
+            mockMvc.perform(get("/api/posts/home"))
+                    .andExpect(jsonPath("$.data.size()").value(2))
+                    .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
+                    .andExpect(jsonPath("$.data[0].isLike").value(false))
+                    .andExpect(jsonPath("$.data[0].userId").value(loginUser.getId()))
+                    .andExpect(jsonPath("$.data[1].postId").value(anotherPost.getId()))
+                    .andExpect(jsonPath("$.data[1].isLike").value(false))
+                    .andExpect(jsonPath("$.data[1].userId").value(anotherUser.getId()));
+        }
+
+        @Test
+        @DisplayName("로그인 한 유저에 따라 좋아요 여부가 올바르게 나타난다.")
+        void getLatestPosts2() throws Exception {
+            mockMvc.perform(get("/api/posts/home")
+                            .header(HttpHeaders.AUTHORIZATION, accessToken))
+                    .andExpect(jsonPath("$.data.size()").value(2))
+                    .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
+                    .andExpect(jsonPath("$.data[0].isLike").value(false))
+                    .andExpect(jsonPath("$.data[0].userId").value(loginUser.getId()))
+                    .andExpect(jsonPath("$.data[1].postId").value(anotherPost.getId()))
+                    .andExpect(jsonPath("$.data[1].isLike").value(true))
+                    .andExpect(jsonPath("$.data[1].userId").value(anotherUser.getId()));
+        }
+
+        @Test
+        @DisplayName("1번 카테고리 글이 잘 나타난다.")
+        void getPostsByCategory1() throws Exception {
+            mockMvc.perform(get("/api/posts")
+                            .param("category", "QnA")
+                            .param("pageNumber", "1")
+                            .param("pageSize", "10"))
+                    .andExpect(jsonPath("$.data.size()").value(2))
+                    .andExpect(jsonPath("$.data[1].postId").value(post.getId()))
+                    .andExpect(jsonPath("$.data[1].isLike").value(false))
+                    .andExpect(jsonPath("$.data[1].userId").value(loginUser.getId()))
+                    .andExpect(jsonPath("$.data[0].postId").value(anotherPost.getId()))
+                    .andExpect(jsonPath("$.data[0].isLike").value(false))
+                    .andExpect(jsonPath("$.data[0].userId").value(anotherUser.getId()));
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 다른 카테고리 글은 조회되지 않는다.")
+        void getPostsByCategory2() throws Exception {
+            mockMvc.perform(get("/api/posts")
+                            .param("category", "QnA")
+                            .param("pageNumber", "2")
+                            .param("pageSize", "10"))
+                    .andExpect(jsonPath("$.data.size()").value(0));
+        }
+
+        @Test
+        @DisplayName("로그인 한 유저에 따라 좋아요 여부가 올바르게 나타난다.")
+        void getPostsByCategory3() throws Exception {
+            mockMvc.perform(get("/api/posts")
+                            .header(HttpHeaders.AUTHORIZATION, accessToken)
+                            .param("category", "QnA")
+                            .param("pageNumber", "1")
+                            .param("pageSize", "10"))
+                    .andExpect(jsonPath("$.data.size()").value(2))
+                    .andExpect(jsonPath("$.data[1].postId").value(post.getId()))
+                    .andExpect(jsonPath("$.data[1].isLike").value(false))
+                    .andExpect(jsonPath("$.data[1].userId").value(loginUser.getId()))
+                    .andExpect(jsonPath("$.data[0].postId").value(anotherPost.getId()))
+                    .andExpect(jsonPath("$.data[0].isLike").value(true))
+                    .andExpect(jsonPath("$.data[0].userId").value(anotherUser.getId()));
         }
     }
 }
