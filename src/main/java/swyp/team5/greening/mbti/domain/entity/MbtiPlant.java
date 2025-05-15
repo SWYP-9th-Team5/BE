@@ -10,10 +10,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "mbti_plants")
+@Getter
 public class MbtiPlant extends BaseTimeEntity {
 
     @Id
