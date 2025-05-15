@@ -7,11 +7,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Entity
 @Table(name = "likes")
+@Getter
 @NoArgsConstructor
 public class Like extends BaseTimeEntity {
 
