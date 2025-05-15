@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Greening API",
-                description = "Greening API 명세",
+                description = "Master AccessToken = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ3MjQzMjcxLCJleHAiOjE4MzM2NDMyNzF9.bdX-_o8SBbnJnhsUPo8UoogXPrOw1jABrRjf71qqFCI",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {

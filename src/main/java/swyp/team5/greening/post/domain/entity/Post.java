@@ -71,6 +71,14 @@ public class Post extends BaseTimeEntity {
         this.state = PostState.DELETED;
     }
 
+    public void increaseLikeCount() {
+        likeCount+=1;
+    }
+
+    public void decreaseLikeCount() {
+        likeCount-=1;
+    }
+
     public void increaseCommentCount() {
         this.commentCount+=1;
     }
