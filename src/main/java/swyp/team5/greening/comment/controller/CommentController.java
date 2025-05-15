@@ -23,9 +23,9 @@ import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.service.CommentCommandService;
 import swyp.team5.greening.comment.service.CommentQueryService;
 import swyp.team5.greening.common.dto.request.PaginationRequestDto;
-import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
+import swyp.team5.greening.common.resolver.LogIn;
 
 @Tag(name = "댓글 관련 API")
 @RestController
@@ -49,7 +49,7 @@ public class CommentController {
         return ApiResponseDto.of(commentCommandService.saveComment(userId, requestDto));
     }
 
-    @Operation(summary = "게시물 댓글 목록 조회 API")
+    @Operation(summary = "게시물 댓글 목록 조회 API (pageNumber는 1부터 시작)")
     @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PaginationApiResponseDto<FindAllCommentResponseDto> getAllComment(

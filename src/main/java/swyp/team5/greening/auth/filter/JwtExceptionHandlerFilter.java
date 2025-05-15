@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import swyp.team5.greening.auth.exception.AuthException;
 import swyp.team5.greening.common.exception.ExceptionResponse;
@@ -38,7 +37,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch(AuthException ve) {
+        } catch (AuthException ve) {
             log.info("{}", ve.getMessage());
 
             //예외 발생 시, JSON 응답으로 예외 메시지 전달

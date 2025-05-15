@@ -5,4 +5,5 @@ import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 
 public interface PostJpaRepository extends JpaRepository<Post, Long>, PostRepository {
+
 }

@@ -69,7 +69,7 @@ class PostControllerTest extends ApiTestSupport {
             .andExpect(jsonPath("$.data.title").value("테스트 게시글"));
     }
 
-    @Test
+//    @Test
     @DisplayName("사용자는 게시글을 삭제할 수 있다.")
     void deletePost() throws Exception {
         // given

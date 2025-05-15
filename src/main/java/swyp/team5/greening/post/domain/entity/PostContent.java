@@ -22,7 +22,7 @@ import swyp.team5.greening.common.base.BaseTimeEntity;
 public class PostContent extends BaseTimeEntity {
 
     @Id
-    @Column(name = "post_image_id")
+    @Column(name = "post_content_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
