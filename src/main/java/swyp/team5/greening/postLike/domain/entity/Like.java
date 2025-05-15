@@ -33,5 +33,4 @@ public class Like extends BaseTimeEntity {
         this.userId = userId;
         this.postId = postId;
     }
-
 }

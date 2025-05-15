@@ -10,16 +10,19 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import swyp.team5.greening.common.resolver.LogInUserArgumentResolver;
+import swyp.team5.greening.common.resolver.OptionalLogInArgumentResolver;
 
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     private final LogInUserArgumentResolver logInUserArgumentResolver;
+    private final OptionalLogInArgumentResolver optionalLogInArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(logInUserArgumentResolver);
+        resolvers.add(optionalLogInArgumentResolver);
     }
 
     @Override

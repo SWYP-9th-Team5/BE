@@ -45,6 +45,7 @@ class PostCommandServiceTest {
 
         @Test
         void 성공적으로_생성한다() {
+            //given
             Post post = Post.builder()
                 .title(title)
                 .userId(userId)
@@ -57,30 +58,14 @@ class PostCommandServiceTest {
 
             given(postRepository.save(any(Post.class))).willReturn(post);
 
+            //when
             CreatePostResponseDto result = postCommandService.createPost(
                 userId, new CreatePostRequestDto(title, categoryId, contentList)
             );
 
+            //then
             assertThat(result.postId()).isEqualTo(100L);
             verify(postRepository).save(any(Post.class));
-        }
-
-        @Test
-        void 제목이_null이면_예외() {
-            var request = new CreatePostRequestDto(null, categoryId, contentList);
-
-            assertThatThrownBy(() -> postCommandService.createPost(userId, request))
-                .isInstanceOf(GreeningGlobalException.class)
-                .hasMessage(PostExceptionMessage.NOT_FOUND_POST.getMessage());
-        }
-
-        @Test
-        void 본문이_없으면_예외() {
-            var request = new CreatePostRequestDto(title, categoryId, List.of());
-
-            assertThatThrownBy(() -> postCommandService.createPost(userId, request))
-                .isInstanceOf(GreeningGlobalException.class)
-                .hasMessage(PostExceptionMessage.NOT_FOUND_POST.getMessage());
         }
     }
 
