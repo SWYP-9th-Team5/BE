@@ -3,7 +3,6 @@ package swyp.team5.greening.comment.service;
 import jakarta.transaction.Transactional;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import swyp.team5.greening.comment.domain.entity.Comment;
 import swyp.team5.greening.comment.domain.repository.CommentRepository;
@@ -13,10 +12,13 @@ import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.exception.CommentExceptionMessage;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
+import swyp.team5.greening.post.domain.entity.Post;
+import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
-@Slf4j
+//todo: 댓글 추가나 삭제를 통해 발생하는 댓글 수 증감 -> 이벤트 처리
+//todo: 동시성 문제 처리
 @Service
 @RequiredArgsConstructor
 public class CommentCommandService {
@@ -30,16 +32,21 @@ public class CommentCommandService {
             Long userId,
             SaveCommentRequestDto requestDto
     ) {
-        //게시물 존재 여부 확인
-        if (!postRepository.existsById(requestDto.postId())) {
-            throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST);
-        }
+        //게시물 존재 조회
+        Post post = postRepository
+                .findByIdAndState(requestDto.postId(), PostState.IN_PROGRESS)
+                .orElseThrow(() ->
+                        new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
+        //댓글 저장
         Comment saveComment = commentRepository.save(Comment.builder()
-                .postId(requestDto.postId())
+                .postId(post.getId())
                 .userId(userId)
                 .comment(requestDto.comment())
                 .build());
+
+        //게시글 댓글 수 증가
+        post.increaseCommentCount();
 
         return new SaveCommentResponseDto(saveComment.getId());
     }
@@ -74,15 +81,18 @@ public class CommentCommandService {
                 .orElseThrow(() -> new GreeningGlobalException(
                         CommentExceptionMessage.NOT_FOUND_COMMENT));
 
-        log.info("log");
-        log.info("{}", comment.getId());
-        log.info("{}", comment.getUserId());
-        log.info("{}", comment.getComment());
+        //게시물 존재 조회
+        Post post = postRepository.findByIdAndState(comment.getPostId(), PostState.IN_PROGRESS)
+                .orElseThrow(() ->
+                        new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
         //댓글 수정 권한 확인
         if (!Objects.equals(comment.getUserId(), userId)) {
             throw new GreeningGlobalException(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER);
         }
+
+        //게시물 댓글 수 감소
+        post.decreaseCommentCount();
 
         //댓글 삭제
         commentRepository.deleteById(requestDto.commentId());
