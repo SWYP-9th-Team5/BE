@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import swyp.team5.greening.post.dto.PostUserNameProjection;
 import swyp.team5.greening.post.dto.data.FindPostDto;
+import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
+import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 
 public interface PostQueryRepository {
 
     Optional<FindPostDto> findPost(Long postId, Long userId);
 
-    List<PostUserNameProjection> findTop6TodayByCategoryWithUserName(
-            Long categoryId
+    List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(
+            Long loginUserId, Long categoryId
     );
 
-    Page<PostUserNameProjection> findAllByCategoryWithUserName(
-            Long categoryId,
-            String state,
-            Pageable pageable
+    Page<FindAllPostResponseDto> findAllByCategoryWithUserName(
+            Long loginUserId, CategoryType categoryType, Pageable pageable
     );
 
 }

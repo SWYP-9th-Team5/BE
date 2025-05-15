@@ -10,89 +10,74 @@ import org.springframework.data.repository.query.Param;
 import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostQueryRepository;
-import swyp.team5.greening.post.dto.PostUserNameProjection;
+import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
+import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 
 public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQueryRepository {
 
-    //단건 조회 쿼리
+    // 게시글 단일 조회
     @Query("""
-    SELECT distinct new swyp.team5.greening.post.dto.data.FindPostDto(post, user, likes)
-    FROM Post post
-    LEFT JOIN User user
-        ON user.id = post.userId
-    LEFT JOIN Like likes
-        on likes.userId = :userId
-        and likes.postId = post.id
-    WHERE post.id = :postId
-    """)
+            SELECT new swyp.team5.greening.post.dto.data.FindPostDto(post, user, likes)
+            FROM Post post
+            LEFT JOIN User user
+                ON user.id = post.userId
+            LEFT JOIN Like likes
+                ON likes.userId = :userId
+                AND likes.postId = post.id
+            WHERE post.id = :postId
+            """)
     Optional<FindPostDto> findPost(
             @Param("postId") Long postId,
             @Param("userId") Long userId
     );
 
     // 홈 화면 오늘 작성된 게시글 중 카테고리별 좋아요 순 top 6
-    @Query(value = """
-            SELECT
-                p.post_id AS postId,
-                p.category_id AS categoryId,
-                p.user_id AS userId,
-                u.user_name AS userName,
-                p.title AS title,
-                pc.content AS content,
-                p.like_count AS likeCount,
-                p.comment_count AS commentCount,
-                p.created_at AS createdAt,
-                p.updated_at AS lastModifiedAt
-            FROM posts p
-            JOIN users u ON p.user_id = u.user_id
-            LEFT JOIN (
-                SELECT pc1.*
-                FROM post_contents pc1
-                WHERE pc1.sequence = (
-                    SELECT MIN(pc2.sequence)
-                    FROM post_contents pc2
-                    WHERE pc2.post_id = pc1.post_id
-                      AND pc2.type = 'TEXT'
-                )
-            ) pc ON pc.post_id = p.post_id
-            WHERE p.category_id = :categoryId
-              AND p.state = 'IN_PROGRESS'
-            ORDER BY p.like_count DESC
+    @Query("""
+            SELECT new swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto(
+            post.id, post.categoryId, post.userId, user.userName, post.title, c.content,
+            post.likeCount, post.commentCount, post.createdAt, post.updatedAt,
+            case when likes.id is not null then true else false end)
+            FROM Post post
+            INNER JOIN User user
+                ON user.id = post.userId
+            LEFT JOIN PostContent c
+                ON c.post = post
+            AND c.sequence = 1
+            LEFT JOIN Like likes
+                ON likes.postId = post.id
+                AND likes.userId = :loginUserId
+            WHERE post.categoryId = :categoryId
+                AND post.state = 'IN_PROGRESS'
+            ORDER BY post.likeCount DESC
             LIMIT 6
-            """, nativeQuery = true)
-    List<PostUserNameProjection> findTop6TodayByCategoryWithUserName(
+            """)
+    List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(
+            @Param("loginUserId") Long loginUserId,
             @Param("categoryId") Long categoryId
     );
 
     // 카테고리 별 조회
-    @Query(value = """
-            SELECT
-                p.post_id AS postId,
-                p.category_id AS categoryId,
-                p.user_id AS userId,
-                u.user_name AS userName,
-                p.title AS title,
-                NULL AS content, -- 페이지 조회에서는 content 제외
-                p.like_count AS likeCount,
-                p.comment_count AS commentCount,
-                p.created_at AS createdAt,
-                p.updated_at AS lastModifiedAt
-            FROM posts p
-            JOIN users u ON p.user_id = u.user_id
-            WHERE p.category_id = :categoryId
-              AND p.state = :state
-            ORDER BY p.created_at DESC
-            """,
-            countQuery = """
-                    SELECT COUNT(*)
-                    FROM posts p
-                    WHERE p.category_id = :categoryId
-                      AND p.state = :state
-                    """,
-            nativeQuery = true)
-    Page<PostUserNameProjection> findAllByCategoryWithUserName(
-            @Param("categoryId") Long categoryId,
-            @Param("state") String state,
+    @Query("""
+            SELECT new swyp.team5.greening.post.dto.response.FindAllPostResponseDto(
+            post.id, post.categoryId, post.userId, user.userName, post.title, 
+            post.likeCount, post.commentCount, post.createdAt, post.updatedAt,
+            case when likes.id is not null then true else false end)
+            FROM Post post
+            INNER JOIN User user
+                ON user.id = post.userId
+            LEFT JOIN Like likes
+                ON likes.postId = post.id
+                AND likes.userId = :loginUserId
+            INNER JOIN Category category
+                ON category.id = post.categoryId
+                AND category.categoryType = :categoryType
+            WHERE post.state = 'IN_PROGRESS'
+            ORDER BY post.createdAt desc
+            """)
+    Page<FindAllPostResponseDto> findAllByCategoryWithUserName(
+            @Param("loginUserId") Long loginUserId,
+            @Param("categoryType") CategoryType categoryType,
             Pageable pageable
     );
 
