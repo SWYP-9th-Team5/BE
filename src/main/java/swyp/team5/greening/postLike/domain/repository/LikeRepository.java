@@ -11,4 +11,6 @@ public interface LikeRepository {
 
     Optional<Like> findByUserIdAndPostId(Long userId, Long postId);
 
+    void deleteAll();
+
 }
