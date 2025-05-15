@@ -1,7 +1,5 @@
 package swyp.team5.greening.post.service;
 
-import java.util.List;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +10,7 @@ import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.entity.PostType;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
+import swyp.team5.greening.post.dto.request.CreatePostRequestDto.ContentDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
@@ -23,11 +22,6 @@ public class PostCommandService {
 
     @Transactional
     public CreatePostResponseDto createPost(Long userId, CreatePostRequestDto requestDto) {
-        if (requestDto.title() == null || requestDto.content() == null || requestDto.content()
-                .isEmpty()) {
-            throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST);
-        }
-
         Post post = Post.builder()
                 .title(requestDto.title())
                 .userId(userId)
@@ -37,19 +31,16 @@ public class PostCommandService {
                 .commentCount(0L)
                 .build();
 
-        List<PostContent> contents = IntStream.range(0, requestDto.content().size())
-                .mapToObj(i -> {
-                    var c = requestDto.content().get(i);
-                    return PostContent.of(
-                            c.value(),
-                            PostType.valueOf(c.type().toUpperCase()),
-                            i + 1,
-                            post
-                    );
-                })
-                .toList();
+        int index = 1;
+        for (ContentDto content : requestDto.content()) {
+            PostContent.builder()
+                    .content(content.value())
+                    .type(PostType.valueOf(content.type().toUpperCase()))
+                    .sequence(index++)
+                    .post(post)
+                    .build();
+        }
 
-        post.getPostContents().addAll(contents);
         Post saved = postRepository.save(post);
 
         return new CreatePostResponseDto(saved.getId());

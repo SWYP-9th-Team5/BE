@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
@@ -40,15 +41,13 @@ public class PostContent extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public static PostContent of(String content, PostType type, Integer sequence, Post post) {
-        return new PostContent(content, type, sequence, post);
-    }
-
-    private PostContent(String content, PostType type, Integer sequence, Post post) {
+    @Builder
+    public PostContent(String content, PostType type, Integer sequence, Post post) {
         this.content = content;
         this.type = type;
         this.sequence = sequence;
         this.post = post;
+        post.getPostContents().add(this);
     }
 
 }

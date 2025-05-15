@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,7 +17,6 @@ import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.support.ApiTestSupport;
-import swyp.team5.greening.user.infrastructure.GoogleLoginClient;
 
 @DisplayName("게시글 통합 테스트")
 @AutoConfigureMockMvc
@@ -26,9 +24,6 @@ class PostControllerTest extends ApiTestSupport {
 
     @Autowired
     private PostRepository postRepository;
-
-    @MockBean
-    private GoogleLoginClient googleLoginClient;
 
     @BeforeEach
     void init() {

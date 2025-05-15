@@ -1,6 +1,5 @@
 package swyp.team5.greening.post.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -27,7 +26,6 @@ import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.PostResponseDto;
 import swyp.team5.greening.post.service.PostCommandService;
 import swyp.team5.greening.post.service.PostQueryService;
-
 
 @Tag(name = "게시글 관련 API")
 @RestController
