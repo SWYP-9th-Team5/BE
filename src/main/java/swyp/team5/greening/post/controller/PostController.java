@@ -23,7 +23,8 @@ import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.common.resolver.OptionalLogIn;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
-import swyp.team5.greening.post.dto.response.PostPreviewResponseDto;
+import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostResponseDto;
 import swyp.team5.greening.post.service.PostCommandService;
 import swyp.team5.greening.post.service.PostQueryService;
@@ -70,19 +71,24 @@ public class PostController {
     @Operation(summary = "홈 화면 게시글 미리보기 (카테고리 별 각 6개씩)")
     @GetMapping("/home")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<PostPreviewResponseDto>> getLatestPosts() {
-        return ApiResponseDto.of(postQueryService.getLatestPostByCategory());
+    public ApiResponseDto<List<FindPostPreviewResponseDto>> getLatestPosts(
+            @OptionalLogIn Long userId
+    ) {
+        return ApiResponseDto.of(postQueryService.findLatestPostByCategory(userId));
     }
 
     @Operation(summary = "카테고리별 게시글 목록 조회 (pageNumber는 1부터 시작)")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PaginationApiResponseDto<PostPreviewResponseDto> getPostsByCategory(
+    public PaginationApiResponseDto<FindAllPostResponseDto> getPostsByCategory(
+            @OptionalLogIn Long userId,
             @RequestParam("category") String categoryName,
             @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
     ) {
         return PaginationApiResponseDto.of(
-                postQueryService.getPostsByCategory(categoryName,
+                postQueryService.findPostsByCategory(
+                        userId,
+                        categoryName,
                         paginationRequestDto.pageNumber(),
                         paginationRequestDto.pageSize())
         );
