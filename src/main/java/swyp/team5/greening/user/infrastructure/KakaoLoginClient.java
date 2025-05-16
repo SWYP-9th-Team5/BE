@@ -23,16 +23,13 @@ public class KakaoLoginClient {
     @Value(value = "${oauth.kakao.security.grant_type}")
     private String GRANT_TYPE;
 
-    @Value(value = "${oauth.kakao.security.redirect_uri}")
-    private String REDIRECT_URI;
-
     //인가 코드를 통해 토큰 발급
-    public Map<String, Object> generateToken(String code) {
+    public Map<String, Object> generateToken(String redirectURI, String code) {
         Map<String, String> formData = new HashMap<>();
         formData.put("code", code);
         formData.put("client_id", CLIENT_ID);
         formData.put("grant_type", GRANT_TYPE);
-        formData.put("redirect_uri", REDIRECT_URI);
+        formData.put("redirect_uri", redirectURI);
 
         return RestClient.builder()
                 .baseUrl(GENERATE_TOKEN_BASE_URL)
