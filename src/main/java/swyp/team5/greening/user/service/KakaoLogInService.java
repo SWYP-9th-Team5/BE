@@ -19,10 +19,10 @@ public class KakaoLogInService {
     private final KakaoLoginClient kakaoLoginClient;
     private final UserRepository userRepository;
 
-    public LoginResponseDto kakaoLogin(String code) {
+    public LoginResponseDto kakaoLogin(String redirectURI, String code) {
 
         //인가 코드를 통해 카카오 서버 접근 액세스 코드 발급
-        Map<String, Object> mapWithToken = kakaoLoginClient.generateToken(code);
+        Map<String, Object> mapWithToken = kakaoLoginClient.generateToken(redirectURI, code);
         String token = (String) mapWithToken.get("access_token");
 
         //액세스 코드를 통해 사용자 정보 조회
