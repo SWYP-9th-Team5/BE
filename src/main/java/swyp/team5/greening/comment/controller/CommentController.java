@@ -26,6 +26,7 @@ import swyp.team5.greening.common.dto.request.PaginationRequestDto;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
+import swyp.team5.greening.common.resolver.OptionalLogIn;
 
 @Tag(name = "댓글 관련 API")
 @RestController
@@ -53,7 +54,7 @@ public class CommentController {
     @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PaginationApiResponseDto<FindAllCommentResponseDto> getAllComment(
-            @LogIn Long userId,
+            @OptionalLogIn Long userId,
             @PathVariable("postId") Long postId,
             @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
     ) {

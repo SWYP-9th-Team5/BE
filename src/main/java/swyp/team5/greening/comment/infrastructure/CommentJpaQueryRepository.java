@@ -18,7 +18,7 @@ public interface CommentJpaQueryRepository extends JpaRepository<Comment, Long>,
            comment.id, user.id, user.userName, comment.comment, comment.createdAt,
            case when(user.id = :userId) then true else false end)
            FROM Comment comment
-           INNER JOIN User user
+           LEFT JOIN User user
            ON user.id = comment.userId
            INNER JOIN Post post
            ON post.id = comment.postId
