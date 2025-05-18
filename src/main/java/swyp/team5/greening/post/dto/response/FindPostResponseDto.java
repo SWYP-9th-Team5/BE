@@ -10,6 +10,7 @@ import swyp.team5.greening.user.domain.entity.User;
 public record FindPostResponseDto(
         Long postId,
         String title,
+        Long categoryId,
         Long userId,
         String userName,
         LocalDateTime createdAt,
@@ -31,6 +32,7 @@ public record FindPostResponseDto(
         return new FindPostResponseDto(
                 post.getId(),
                 post.getTitle(),
+                post.getCategoryId(),
                 user.getId(),
                 user.getUserName(),
                 post.getCreatedAt(),
