@@ -9,7 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -56,11 +56,8 @@ dependencies {
     testImplementation "org.testcontainers:testcontainers:1.19.3"
     testImplementation "org.testcontainers:mysql:1.19.3"
 
-    //NCP Storage
-    implementation platform("software.amazon.awssdk:bom:2.25.34") // 버전은 최신 안정화 버전 사용
-    implementation 'software.amazon.awssdk:s3'
-    implementation 'software.amazon.awssdk:auth'
-    implementation 'software.amazon.awssdk:regions'
+    //AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

@@ -31,29 +31,29 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening:test" .
+        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening" .
 
       - name: Push Docker image to Docker Hub
-        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/greening:test"
+        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/greening"
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to NCP via SSH
+      - name: Deploy to AWS via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USER }}
-          key: ${{ secrets.NCP_SSH_KEY }}
+          host: ${{ secrets.S3_HOST }}
+          username: ${{ secrets.S3_USER }}
+          key: ${{ secrets.S3_SSH_KEY }}
           script: |
             fuser -k 8080/tcp || true
             
             docker rm -f $(docker ps -aq) || true
             docker rmi -f $(docker images -q) || true
             
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
             docker run -d --name greening -p 8080:8080 \
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
@@ -63,8 +63,9 @@ jobs:
               -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-              -e "NCP_BUCKET=${{ secrets.NCP_BUCKET }}" \
-              -e "NCP_STORAGE_ACCESS_KEY=${{ secrets.NCP_STORAGE_ACCESS_KEY }}" \
-              -e "NCP_STORAGE_SECRET_KEY=${{ secrets.NCP_STORAGE_SECRET_KEY }}" \
-              -e "NCP_BASE_URL=${{ secrets.NCP_BASE_URL }}" \
-              ${{ secrets.DOCKERHUB_USERNAME }}/greening:test
+              -e "S3_REGION=${{ secrets.S3_REGION }}"
+              -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
+              -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
+              -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
+              -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
+              ${{ secrets.DOCKERHUB_USERNAME }}/greening

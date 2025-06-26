@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
-import swyp.team5.greening.image.infrastructure.NCPImageUploadClient;
+import swyp.team5.greening.image.infrastructure.S3ImageUploadClient;
 
 @Tag(name = "이미지 업로드")
 @RestController
@@ -22,7 +22,7 @@ import swyp.team5.greening.image.infrastructure.NCPImageUploadClient;
 @RequiredArgsConstructor
 public class ImageUploadController {
 
-    private final NCPImageUploadClient imageUploadClient;
+    private final S3ImageUploadClient imageUploadClient;
 
     @Operation(summary = "이미지 업로드 API")
     @ResponseStatus(HttpStatus.OK)
