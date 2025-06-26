@@ -27,6 +27,14 @@ oauth:
       client_secret: ${GOOGLE_CLIENT_SECRET}
       grant_type: authorization_code
 
+s3:
+  storage:
+    region: ${REGION}
+    bucket: ${S3_BUCKET}
+    access-key: ${S3_STORAGE_ACCESS_KEY}
+    secret-key: ${S3_STORAGE_SECRET_KEY}
+    base-url: ${S3_BASE_URL}
+
 ncp:
   storage:
     region: kr-standard
