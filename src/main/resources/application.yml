@@ -43,17 +43,8 @@ oauth:
 
 s3:
   storage:
-    region: ${REGION}
+    region: ${S3_REGION}
     bucket: ${S3_BUCKET}
     access-key: ${S3_STORAGE_ACCESS_KEY}
     secret-key: ${S3_STORAGE_SECRET_KEY}
     base-url: ${S3_BASE_URL}
-
-ncp:
-  storage:
-    region: kr-standard
-    bucket: ${NCP_BUCKET}
-    end-point: https://kr.object.ncloudstorage.com
-    access-key: ${NCP_STORAGE_ACCESS_KEY}
-    secret-key: ${NCP_STORAGE_SECRET_KEY}
-    base-url: ${NCP_BASE_URL}

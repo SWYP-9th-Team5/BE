@@ -21,10 +21,11 @@ jobs:
       KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      NCP_BUCKET: ${{ secrets.NCP_BUCKET }}
-      NCP_STORAGE_ACCESS_KEY: ${{ secrets.NCP_STORAGE_ACCESS_KEY }}
-      NCP_STORAGE_SECRET_KEY: ${{ secrets.NCP_STORAGE_SECRET_KEY }}
-      NCP_BASE_URL: ${{ secrets.NCP_BASE_URL }}
+      S3_REGION: ${{ secrets.S3_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_STORAGE_ACCESS_KEY: ${{ secrets.S3_STORAGE_ACCESS_KEY }}
+      S3_STORAGE_SECRET_KEY: ${{ secrets.S3_STORAGE_SECRET_KEY }}
+      S3_BASE_URL: ${{ secrets.S3_BASE_URL }}
 
     steps:
       - uses: actions/checkout@v3
