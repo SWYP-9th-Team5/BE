@@ -60,7 +60,7 @@ jobs:
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
               -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-              -e "JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }}" \
+              -e JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }} \
               -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
               -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
