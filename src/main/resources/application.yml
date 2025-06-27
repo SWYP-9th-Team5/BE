@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     defer-datasource-initialization: true
     open-in-view: false
     properties:
@@ -23,7 +23,7 @@ spring:
       max-request-size: 20MB
 
 jwt:
-  access-expiry-time: ${JWT_ACCESS_EXPIRY}
+  access-expiry-time: 1440
   client-secret: ${JWT_SECRET}
 
 oauth:
