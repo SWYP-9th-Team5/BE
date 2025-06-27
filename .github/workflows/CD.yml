@@ -24,7 +24,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Gradle
-        run: ./gradlew clean bootJar
+        run: ./gradlew clean -x test
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -50,15 +50,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            fuser -k 8080/tcp || true
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
+            sudo docker stop ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            sudo docker container prune -f
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
             
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
-            docker stop ${{ secrets.DOCKERHUB_USERNAME }}/greening
-            docker container prune -f
-            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
-            
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
-            docker run -d --name greening -p 8080:8080 \
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            sudo docker run -d --name greening -p 8080:8080 \
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
               -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
