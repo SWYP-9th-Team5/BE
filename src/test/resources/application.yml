@@ -9,7 +9,7 @@ spring:
         format_sql: true
 
 jwt:
-  access-expiry-time: ${JWT_ACCESS_EXPIRY}
+  access-expiry-time: 1440
   client-secret: ${JWT_SECRET}
 
 oauth:
