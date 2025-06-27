@@ -1,4 +1,4 @@
-name: CD (docker -> ncp) 
+name: CD (docker -> EC2)
 
 on:
   pull_request:
@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening" .
+        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening"
 
       - name: Push Docker image to Docker Hub
         run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/greening"
@@ -52,8 +52,10 @@ jobs:
           script: |
             fuser -k 8080/tcp || true
             
-            docker rm -f $(docker ps -aq) || true
-            docker rmi -f $(docker images -q) || true
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
+            docker stop ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            docker container prune -f
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
             
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
             docker run -d --name greening -p 8080:8080 \
