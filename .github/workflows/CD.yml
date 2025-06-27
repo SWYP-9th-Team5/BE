@@ -1,4 +1,4 @@
-name: CD (docker -> ncp) 
+name: CD (docker -> EC2)
 
 on:
   push:
@@ -21,20 +21,29 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Gradle
-        run: ./gradlew clean bootJar
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      # Gradle 셋팅
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+
+      # 빌드
+      - name: Build with Gradle Wrapper
+        run: ./gradlew clean build -x test
+
+      # 도커 로그인
+      - name: docker login
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening" .
+        run: docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/greening
 
       - name: Push Docker image to Docker Hub
-        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/greening"
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/greening
 
   deploy:
     needs: build
@@ -44,28 +53,28 @@ jobs:
       - name: Deploy to AWS via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.S3_HOST }}
-          username: ${{ secrets.S3_USER }}
-          key: ${{ secrets.S3_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            fuser -k 8080/tcp || true
-            
-            docker rm -f $(docker ps -aq) || true
-            docker rmi -f $(docker images -q) || true
-            
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
-            docker run -d --name greening -p 8080:8080 \
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
+            sudo docker stop greening-server || true
+            sudo docker container prune -f
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            sudo docker run -d --log-driver=syslog \
+            -e TZ=Asia/Seoul \
+            -p 8080:8080 --name greening-server \
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
               -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-              -e "JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }}" \
               -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
               -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
               -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-              -e "S3_REGION=${{ secrets.S3_REGION }}"
+              -e "S3_REGION=${{ secrets.S3_REGION }}" \
               -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
               -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
               -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
               -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
-              ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            ${{ secrets.DOCKERHUB_USERNAME }}/greening
