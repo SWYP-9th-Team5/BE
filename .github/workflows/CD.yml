@@ -13,32 +13,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # 변수 설정
-    env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      JWT_ACCESS_EXPIRY: ${{ secrets.JWT_ACCESS_EXPIRY }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      S3_REGION: ${{ secrets.S3_REGION }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      S3_STORAGE_ACCESS_KEY: ${{ secrets.S3_STORAGE_ACCESS_KEY }}
-      S3_STORAGE_SECRET_KEY: ${{ secrets.S3_STORAGE_SECRET_KEY }}
-      S3_BASE_URL: ${{ secrets.S3_BASE_URL }}
-
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # Java 세팅
-      - name: Set up JDK 17
+      # Java 21 세팅
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       # Gradle 권한 부여
       - name: Grant execute permission for gradlew
@@ -67,21 +51,6 @@ jobs:
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/greening
 
-#      - name: Build with Gradle
-#        run: ./gradlew clean bootJar
-
-#      - name: Log in to Docker Hub
-#        uses: docker/login-action@v3
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-#      - name: Build the Docker image
-#        run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/greening" .
-
-#      - name: Push Docker image to Docker Hub
-#        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/greening"
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -102,19 +71,16 @@ jobs:
             sudo docker run -d --log-driver=syslog \
             -e TZ=Asia/Seoul \
             -p 8000:8000 --name greening-server \
+              -e "DB_URL=${{ secrets.DB_URL }}" \
+              -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
+              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+              -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
+              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+              -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+              -e "S3_REGION=${{ secrets.S3_REGION }}" \
+              -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
+              -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
+              -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
+              -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
             ${{ secrets.DOCKERHUB_USERNAME }}/greening
-#            sudo docker run -d --name greening -p 8080:8080 \
-#              -e "DB_URL=${{ secrets.DB_URL }}" \
-#              -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
-#              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-#              -e JWT_ACCESS_EXPIRY=${{ secrets.JWT_ACCESS_EXPIRY }} \
-#              -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
-#              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
-#              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
-#              -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-#              -e "S3_REGION=${{ secrets.S3_REGION }}" \
-#              -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
-#              -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
-#              -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
-#              -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
-#              ${{ secrets.DOCKERHUB_USERNAME }}/greening
