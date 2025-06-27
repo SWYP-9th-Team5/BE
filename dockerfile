@@ -5,4 +5,4 @@ FROM openjdk:17-jdk-slim
 COPY build/libs/greening-0.0.1-SNAPSHOT.jar /app.jar
 
 # 애플리케이션을 실행할 명령어
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=8080", "-jar", "/app.jar"]

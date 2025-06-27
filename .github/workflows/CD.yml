@@ -1,6 +1,8 @@
 name: CD (docker -> EC2)
 
 on:
+  pull_request:
+    branches: [ "develop" ]
   push:
     branches: [ "develop", "main" ]
 
@@ -68,7 +70,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
             sudo docker run -d --log-driver=syslog \
             -e TZ=Asia/Seoul \
-            -p 8000:8000 --name greening-server \
+            -p 8080:8080 --name greening-server \
               -e "DB_URL=${{ secrets.DB_URL }}" \
               -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
               -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
