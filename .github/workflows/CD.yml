@@ -17,12 +17,12 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      # Java 21 세팅
+      # Java 17 세팅
       - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       # Gradle 권한 부여
       - name: Grant execute permission for gradlew
