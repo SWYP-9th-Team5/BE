@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
-            sudo docker stop ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            sudo docker stop greening-server
             sudo docker container prune -f
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
