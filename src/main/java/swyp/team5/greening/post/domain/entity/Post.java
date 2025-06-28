@@ -71,8 +71,15 @@ public class Post extends BaseTimeEntity {
         this.title = newTitle;
     }
 
-    public void deleteContent() {
+    public void updateContent(List<PostContent> contents) {
         postContents.clear();
+
+        int index = 1;
+
+        for (PostContent content : contents) {
+            content.setPost(this);
+            content.setSequence(index++);
+        }
     }
 
     public void delete() {

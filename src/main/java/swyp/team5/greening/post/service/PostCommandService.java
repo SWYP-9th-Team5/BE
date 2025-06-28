@@ -1,5 +1,6 @@
 package swyp.team5.greening.post.service;
 
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.entity.PostType;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
-import swyp.team5.greening.post.dto.request.ContentDto;
 import swyp.team5.greening.post.dto.request.UpdatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
@@ -36,15 +36,14 @@ public class PostCommandService {
                 .commentCount(0L)
                 .build();
 
-        int index = 1;
-        for (ContentDto content : requestDto.content()) {
-            PostContent.builder()
-                    .content(content.value())
-                    .type(PostType.valueOf(content.type().toUpperCase()))
-                    .sequence(index++)
-                    .post(post)
-                    .build();
-        }
+        List<PostContent> contents = requestDto.content().stream()
+                .map(dto -> PostContent.builder()
+                        .content(dto.value())
+                        .type(PostType.valueOf(dto.type().toUpperCase()))
+                        .build())
+                .toList();
+
+        post.updateContent(contents);
 
         Post saved = postRepository.save(post);
 
@@ -72,17 +71,14 @@ public class PostCommandService {
 
         post.updateTitle(requestDto.title());
 
-        post.deleteContent();
+        List<PostContent> contents = requestDto.content().stream()
+                .map(dto -> PostContent.builder()
+                        .content(dto.value())
+                        .type(PostType.valueOf(dto.type().toUpperCase()))
+                        .build())
+                .toList();
 
-        int index = 1;
-        for (ContentDto content : requestDto.content()) {
-            PostContent.builder()
-                    .content(content.value())
-                    .type(PostType.valueOf(content.type().toUpperCase()))
-                    .sequence(index++)
-                    .post(post)
-                    .build();
-        }
+        post.updateContent(contents);
     }
 
     @Transactional
@@ -94,7 +90,7 @@ public class PostCommandService {
                 .orElseThrow(
                         () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
-        if (!post.getUserId().equals(userId)) {
+        if (!Objects.equals(post.getUserId(), userId)) {
             throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST); // 권한 예외
         }
 
