@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import swyp.team5.greening.common.dto.response.PaginationApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.common.resolver.OptionalLogIn;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
+import swyp.team5.greening.post.dto.request.UpdatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
@@ -46,6 +48,16 @@ public class PostController {
             @Validated @RequestBody CreatePostRequestDto requestDto
     ) {
         return ApiResponseDto.of(postCommandService.createPost(userId, requestDto));
+    }
+
+    @Operation(summary = "게시글 수정 API")
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePost(
+            @LogIn Long userId,
+            @Validated @RequestBody UpdatePostRequestDto requestDto
+    ) {
+        postCommandService.updatePost(userId, requestDto);
     }
 
     @Operation(summary = "게시글 단건 조회 API")

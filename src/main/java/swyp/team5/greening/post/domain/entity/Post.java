@@ -47,7 +47,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private final List<PostContent> postContents = new ArrayList<>();
 
     @Builder
@@ -65,6 +65,14 @@ public class Post extends BaseTimeEntity {
         this.state = state;
         this.categoryId = categoryId;
         this.userId = userId;
+    }
+
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+    }
+
+    public void deleteContent() {
+        postContents.clear();
     }
 
     public void delete() {
