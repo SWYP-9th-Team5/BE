@@ -58,10 +58,11 @@ public class PostCommandService {
     //5. 새로운 본문 저장
     @Transactional
     public void updatePost(
+            Long postId,
             Long userId,
             UpdatePostRequestDto requestDto
     ) {
-        Post post = postRepository.findByIdAndState(requestDto.postId(), PostState.IN_PROGRESS)
+        Post post = postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)
                 .orElseThrow(
                         () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 

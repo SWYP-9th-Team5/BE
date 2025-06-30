@@ -51,13 +51,14 @@ public class PostController {
     }
 
     @Operation(summary = "게시글 수정 API")
-    @PutMapping
+    @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(
             @LogIn Long userId,
+            @PathVariable Long postId,
             @Validated @RequestBody UpdatePostRequestDto requestDto
     ) {
-        postCommandService.updatePost(userId, requestDto);
+        postCommandService.updatePost(postId, userId, requestDto);
     }
 
     @Operation(summary = "게시글 단건 조회 API")
