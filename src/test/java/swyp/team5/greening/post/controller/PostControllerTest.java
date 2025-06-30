@@ -1,5 +1,6 @@
 package swyp.team5.greening.post.controller;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -14,14 +15,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import swyp.team5.greening.auth.infrastructure.JwtTokenProvider;
+import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
+import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.dto.request.ContentDto;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
+import swyp.team5.greening.post.dto.request.UpdatePostRequestDto;
 import swyp.team5.greening.post.fixture.PostFixture;
 import swyp.team5.greening.postLike.domain.entity.Like;
 import swyp.team5.greening.postLike.domain.repository.LikeRepository;
 import swyp.team5.greening.postLike.fixture.LikeFixture;
 import swyp.team5.greening.support.ApiTestSupport;
+import swyp.team5.greening.user.domain.entity.LoginType;
 import swyp.team5.greening.user.domain.entity.User;
 import swyp.team5.greening.user.domain.repository.UserRepository;
 
@@ -37,6 +44,8 @@ class PostControllerTest extends ApiTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void init() {
@@ -50,15 +59,15 @@ class PostControllerTest extends ApiTestSupport {
 
         CreatePostRequestDto requestDto;
 
-        List<CreatePostRequestDto.ContentDto> contents;
+        List<ContentDto> contents;
 
         @BeforeEach
         void setUp() {
             contents = List.of(
-                    new CreatePostRequestDto.ContentDto("TEXT", "1번 텍스트"),
-                    new CreatePostRequestDto.ContentDto("IMAGE", "https://example.com/1.png"),
-                    new CreatePostRequestDto.ContentDto("TEXT", "2번 텍스트"),
-                    new CreatePostRequestDto.ContentDto("IMAGE", "https://example.com/2.png")
+                    new ContentDto("TEXT", "1번 텍스트"),
+                    new ContentDto("IMAGE", "https://example.com/1.png"),
+                    new ContentDto("TEXT", "2번 텍스트"),
+                    new ContentDto("IMAGE", "https://example.com/2.png")
             );
 
             requestDto = new CreatePostRequestDto("테스트 게시글", 1L, contents);
@@ -101,7 +110,7 @@ class PostControllerTest extends ApiTestSupport {
         @DisplayName("사용자는 게시글을 단건 조회할 수 있다.")
         void getPost() throws Exception {
             // when
-            ResultActions result = mockMvc.perform(get("/api/posts/{id}", post.getId())
+            ResultActions result = mockMvc.perform(get("/api/posts/{postId}", post.getId())
                     .header(HttpHeaders.AUTHORIZATION, accessToken));
 
             // then
@@ -111,6 +120,61 @@ class PostControllerTest extends ApiTestSupport {
                     .andExpect(jsonPath("$.data.content.size()").value(5))
                     .andExpect(jsonPath("$.data.isLike").value(true))
                     .andExpect(jsonPath("$.data.isAuthor").value(true));
+        }
+
+        @Test
+        @DisplayName("사용자는 자신이 작성한 게시글을 수정할 수 있다.")
+        void updatePost() throws Exception {
+            // given
+            String updateTitle = "수정된 제목";
+            List<ContentDto> updateContents = List.of(new ContentDto("TEXT", "수정된 내용"));
+
+            UpdatePostRequestDto requestDto = new UpdatePostRequestDto(updateTitle, updateContents);
+
+            // when
+            ResultActions result = mockMvc.perform(put("/api/posts/{postId}", post.getId())
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(requestDto)));
+
+            Post resultPost = postRepository.findByIdAndState(post.getId(), PostState.IN_PROGRESS)
+                    .orElseThrow();
+
+            // then
+            result.andExpect(status().isOk());
+
+            assertThat(resultPost.getTitle()).isEqualTo(updateTitle);
+        }
+
+        @Test
+        @DisplayName("자신이 작성하지 않은 게시글을 수정하려 할 경우 예외가 발생한다.")
+        void updatePost2() throws Exception {
+            // given
+            User anotherUser = User.builder()
+                    .email("email")
+                    .loginType(LoginType.KAKAO)
+                    .userName("name")
+                    .nickname("nickname")
+                    .build();
+
+            userRepository.save(anotherUser);
+            String anotherUserToken = jwtTokenProvider.createToken(anotherUser.getId());
+
+            String updateTitle = "수정된 제목";
+            List<ContentDto> updateContents = List.of(new ContentDto("TEXT", "수정된 내용"));
+
+            UpdatePostRequestDto requestDto = new UpdatePostRequestDto(updateTitle, updateContents);
+
+            // when
+            ResultActions perform = mockMvc.perform(put("/api/posts/{postId}", post.getId())
+                    .header(HttpHeaders.AUTHORIZATION, anotherUserToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(requestDto)));
+
+            // then
+            perform.andExpect(result ->
+                    assertThat(result.getResolvedException().getClass())
+                    .isAssignableFrom(GreeningGlobalException.class));
         }
 
         @Test
