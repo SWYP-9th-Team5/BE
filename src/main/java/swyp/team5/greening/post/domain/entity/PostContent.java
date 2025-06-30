@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,9 +46,24 @@ public class PostContent extends BaseTimeEntity {
     public PostContent(String content, PostType type, Integer sequence, Post post) {
         this.content = content;
         this.type = type;
-        this.sequence = sequence;
+
+        if (!Objects.isNull(sequence)) {
+            this.sequence = sequence;
+        }
+
+        if (!Objects.isNull(post)) {
+            this.post = post;
+            post.getPostContents().add(this);
+        }
+    }
+
+    public void setPost(Post post) {
         this.post = post;
         post.getPostContents().add(this);
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 
 }

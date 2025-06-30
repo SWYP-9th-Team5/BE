@@ -1,17 +1,12 @@
 package swyp.team5.greening.post.dto.request;
 
-
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record CreatePostRequestDto(
+public record UpdatePostRequestDto(
 
         @NotEmpty
         String title,
-
-        @NotNull
-        Long categoryId,
 
         @NotEmpty
         List<ContentDto> content
