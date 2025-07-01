@@ -12,6 +12,7 @@ import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostQueryRepository;
 import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
@@ -62,8 +63,19 @@ public class PostQueryService {
 
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
-        return  postQueryRepository.findAllByCategoryWithUserName(
+        return postQueryRepository.findAllByCategoryWithUserName(
                 loginUserId, categoryType, pageRequest
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FindMyAllPostResponseDto> findMyPosts(
+            Long loginUserId,
+            Integer pageNumber,
+            Integer pageSize
+    ) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return postQueryRepository.findMyPosts(loginUserId, pageRequest);
     }
 }

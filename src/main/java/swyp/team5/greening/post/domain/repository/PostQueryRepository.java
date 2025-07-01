@@ -6,19 +6,31 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
 import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 
 public interface PostQueryRepository {
 
-    Optional<FindPostDto> findPost(Long postId, Long userId);
+    Optional<FindPostDto> findPost(
+            Long postId,
+            Long userId
+    );
 
     List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(
-            Long loginUserId, Long categoryId
+            Long loginUserId,
+            Long categoryId
     );
 
     Page<FindAllPostResponseDto> findAllByCategoryWithUserName(
-            Long loginUserId, CategoryType categoryType, Pageable pageable
+            Long loginUserId,
+            CategoryType categoryType,
+            Pageable pageable
+    );
+
+    Page<FindMyAllPostResponseDto> findMyPosts(
+            Long userId,
+            Pageable pageable
     );
 
 }
