@@ -11,7 +11,6 @@ public record FindMyAllPostResponseDto(
         LocalDateTime createdAt,
         LocalDateTime lastModifiedAt,
         boolean isLike
-
-        ) {
+) {
 
 }

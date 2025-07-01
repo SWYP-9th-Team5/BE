@@ -123,6 +123,22 @@ class PostControllerTest extends ApiTestSupport {
         }
 
         @Test
+        @DisplayName("사용자는 자신이 작성한 게시글을 조회할 수 있다.")
+        void getMyPost() throws Exception {
+            // when
+            ResultActions result = mockMvc.perform(get("/api/posts/my")
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .param("pageNumber", "1")
+                    .param("pageSize", "10"));
+
+            // then
+            result.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
+                    .andExpect(jsonPath("$.data[0].title").value(post.getTitle()))
+                    .andExpect(jsonPath("$.data[0].isLike").value(true));
+        }
+
+        @Test
         @DisplayName("사용자는 자신이 작성한 게시글을 수정할 수 있다.")
         void updatePost() throws Exception {
             // given
