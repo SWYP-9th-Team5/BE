@@ -18,6 +18,7 @@ import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQueryRepository {
 
     // 게시글 단일 조회
+    @Override
     @Query("""
             SELECT new swyp.team5.greening.post.dto.data.FindPostDto(post, user, likes)
             FROM Post post
@@ -34,6 +35,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     );
 
     // 홈 화면 오늘 작성된 게시글 중 카테고리별 좋아요 순 top 6
+    @Override
     @Query("""
             SELECT new swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto(
             post.id, post.categoryId, post.userId, user.userName, post.title, c.content,
@@ -59,6 +61,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     );
 
     // 카테고리 별 조회
+    @Override
     @Query("""
             SELECT new swyp.team5.greening.post.dto.response.FindAllPostResponseDto(
             post.id, post.categoryId, post.userId, user.userName, post.title,
@@ -83,6 +86,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     );
 
     //특정 유저가 작성한 게시글 조회
+    @Override
     @Query("""
             SELECT new swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto(
             post.id, post.categoryId, post.title, post.likeCount,
