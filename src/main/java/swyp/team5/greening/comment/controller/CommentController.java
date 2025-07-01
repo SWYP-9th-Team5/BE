@@ -19,6 +19,7 @@ import swyp.team5.greening.comment.dto.request.DeleteCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
+import swyp.team5.greening.comment.dto.response.FindMyAllCommentResponseDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.service.CommentCommandService;
 import swyp.team5.greening.comment.service.CommentQueryService;
@@ -47,7 +48,10 @@ public class CommentController {
             @LogIn Long userId,
             @Validated @RequestBody SaveCommentRequestDto requestDto
     ) {
-        return ApiResponseDto.of(commentCommandService.saveComment(userId, requestDto));
+        return ApiResponseDto.of(commentCommandService.saveComment(
+                userId,
+                requestDto
+        ));
     }
 
     @Operation(summary = "게시물 댓글 목록 조회 API (pageNumber는 1부터 시작)")
@@ -59,9 +63,25 @@ public class CommentController {
             @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
     ) {
         return PaginationApiResponseDto.of(commentQueryService.findAllComment(
-                userId, postId,
-                paginationRequestDto.pageNumber(), paginationRequestDto.pageSize()
+                userId,
+                postId,
+                paginationRequestDto.pageNumber(),
+                paginationRequestDto.pageSize()
         ));
+    }
+
+    @Operation(summary = "내가 작성한 댓글 목록 조회 API")
+    @GetMapping("/my")
+    @ResponseStatus(HttpStatus.OK)
+    public PaginationApiResponseDto<FindMyAllCommentResponseDto> getMyComments(
+            @LogIn Long userId,
+            @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
+    ) {
+        return PaginationApiResponseDto.of(commentQueryService.findMyComments(
+                userId,
+                paginationRequestDto.pageNumber(),
+                paginationRequestDto.pageSize())
+        );
     }
 
     @Operation(summary = "댓글 수정 API")
@@ -71,7 +91,10 @@ public class CommentController {
             @LogIn Long userId,
             @Validated @RequestBody UpdateCommentRequestDto requestDto
     ) {
-        commentCommandService.updateComment(userId, requestDto);
+        commentCommandService.updateComment(
+                userId,
+                requestDto
+        );
     }
 
     @Operation(summary = "댓글 삭제 API")
@@ -81,7 +104,10 @@ public class CommentController {
             @LogIn Long userId,
             @Validated @RequestBody DeleteCommentRequestDto requestDto
     ) {
-        commentCommandService.deleteComment(userId, requestDto);
+        commentCommandService.deleteComment(
+                userId,
+                requestDto
+        );
     }
 
 }

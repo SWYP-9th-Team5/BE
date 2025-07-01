@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swyp.team5.greening.comment.domain.repository.CommentQueryRepository;
 import swyp.team5.greening.comment.dto.response.FindAllCommentResponseDto;
+import swyp.team5.greening.comment.dto.response.FindMyAllCommentResponseDto;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
@@ -20,10 +21,11 @@ public class CommentQueryService {
 
     @Transactional(readOnly = true)
     public Page<FindAllCommentResponseDto> findAllComment(
-            Long userId, Long postId,
-            Integer pageNumber, Integer pageSize
+            Long userId,
+            Long postId,
+            Integer pageNumber,
+            Integer pageSize
     ) {
-
         //게시물 존재 여부 확인
         if (!postRepository.existsById(postId)) {
             throw new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST);
@@ -32,6 +34,17 @@ public class CommentQueryService {
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
         return commentQueryRepository.findAllComment(userId, postId, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FindMyAllCommentResponseDto> findMyComments(
+            Long loginUserId,
+            Integer pageNumber,
+            Integer pageSize
+    ) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return commentQueryRepository.findMyComments(loginUserId, pageRequest);
     }
 
 }
