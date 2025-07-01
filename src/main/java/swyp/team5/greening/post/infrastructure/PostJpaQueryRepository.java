@@ -11,6 +11,7 @@ import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostQueryRepository;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
 import swyp.team5.greening.postCategory.domain.entity.CategoryType;
 
@@ -60,7 +61,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     // 카테고리 별 조회
     @Query("""
             SELECT new swyp.team5.greening.post.dto.response.FindAllPostResponseDto(
-            post.id, post.categoryId, post.userId, user.userName, post.title, 
+            post.id, post.categoryId, post.userId, user.userName, post.title,
             post.likeCount, post.commentCount, post.createdAt, post.updatedAt,
             case when likes.id is not null then true else false end)
             FROM Post post
@@ -78,6 +79,25 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     Page<FindAllPostResponseDto> findAllByCategoryWithUserName(
             @Param("loginUserId") Long loginUserId,
             @Param("categoryType") CategoryType categoryType,
+            Pageable pageable
+    );
+
+    //특정 유저가 작성한 게시글 조회
+    @Query("""
+            SELECT new swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto(
+            post.id, post.categoryId, post.title, post.likeCount,
+            post.commentCount, post.createdAt, post.updatedAt,
+            case when likes.id is not null then true else false end)
+            FROM Post post
+            LEFT JOIN Like likes
+                ON likes.postId = post.id
+                AND likes.userId = :loginUserId
+            WHERE post.userId = :loginUserId
+                AND post.state = 'IN_PROGRESS'
+            ORDER BY post.createdAt desc
+    """)
+    Page<FindMyAllPostResponseDto> findMyPosts(
+            @Param("loginUserId") Long loginUserId,
             Pageable pageable
     );
 

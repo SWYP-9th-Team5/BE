@@ -26,6 +26,7 @@ import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.request.UpdatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
+import swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostResponseDto;
 import swyp.team5.greening.post.service.PostCommandService;
@@ -106,4 +107,20 @@ public class PostController {
                         paginationRequestDto.pageSize())
         );
     }
+
+    @Operation(summary = "내가 작성한 게시글 목록 조회 API")
+    @GetMapping("/my")
+    @ResponseStatus(HttpStatus.OK)
+    public PaginationApiResponseDto<FindMyAllPostResponseDto> getMyPosts(
+            @LogIn Long userId,
+            @Validated @ModelAttribute PaginationRequestDto paginationRequestDto
+    ) {
+        return PaginationApiResponseDto.of(
+                postQueryService.findMyPosts(
+                        userId,
+                        paginationRequestDto.pageNumber(),
+                        paginationRequestDto.pageSize()
+                ));
+    }
+
 }
