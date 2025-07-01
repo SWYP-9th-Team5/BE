@@ -158,6 +158,26 @@ class CommentControllerTest extends ApiTestSupport {
         }
 
         @Test
+        @DisplayName("내가 작성한 댓글을 모두 조회할 수 있다.")
+        void getMyComments() throws Exception {
+            //when
+            ResultActions perform = mockMvc.perform(get("/api/comments/my")
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .param("pageNumber", "1")
+                    .param("pageSize", "100")
+            );
+
+            //then
+            perform.andExpectAll(
+                    jsonPath("$.data.size()").value(1),
+                    jsonPath("$.data[0].commentId").value(comment1.getId()),
+                    jsonPath("$.data[0].comment").value(comment1.getComment()),
+                    jsonPath("$.data[0].postId").value(post.getId()),
+                    jsonPath("$.data[0].postTitle").value(post.getTitle())
+            );
+        }
+
+        @Test
         @DisplayName("자신이 작성한 댓글을 삭제할 수 있다.")
         void deleteComment1() throws Exception {
             //given
