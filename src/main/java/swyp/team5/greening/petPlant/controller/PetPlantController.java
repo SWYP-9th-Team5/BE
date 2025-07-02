@@ -2,9 +2,11 @@ package swyp.team5.greening.petPlant.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +16,9 @@ import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.petPlant.dto.request.CreatePetPlantRequestDto;
 import swyp.team5.greening.petPlant.dto.response.CreatePetPlantResponseDto;
-import swyp.team5.greening.petPlant.service.PetPlantService;
+import swyp.team5.greening.petPlant.dto.response.FindAllPetPlantResponseDto;
+import swyp.team5.greening.petPlant.service.PetPlantCommandService;
+import swyp.team5.greening.petPlant.service.PetPlantQueryService;
 
 @Tag(name = "애완 식물 관련 API")
 @RestController
@@ -22,16 +26,24 @@ import swyp.team5.greening.petPlant.service.PetPlantService;
 @RequiredArgsConstructor
 public class PetPlantController {
 
-    private final PetPlantService petPlantService;
+    private final PetPlantCommandService petPlantCommandService;
+    private final PetPlantQueryService petPlantQueryService;
 
-    @Operation(summary = "게시글 작성 API")
+    @Operation(summary = "애완 식물 추가 API")
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<CreatePetPlantResponseDto> createPetPlant(
             @LogIn Long userId,
             @Validated @RequestBody CreatePetPlantRequestDto requestDto
     ) {
-        return ApiResponseDto.of(petPlantService.createPetPlant(userId, requestDto));
+        return ApiResponseDto.of(petPlantCommandService.createPetPlant(userId, requestDto));
+    }
+
+    @Operation(summary = "나의 애완 식물 목록 조회 API")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<List<FindAllPetPlantResponseDto>> getMyPetPlants(@LogIn Long userId) {
+        return ApiResponseDto.of(petPlantQueryService.findMyPetPlants(userId));
     }
 
 }
