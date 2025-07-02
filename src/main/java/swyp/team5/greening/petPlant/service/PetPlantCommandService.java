@@ -11,7 +11,7 @@ import swyp.team5.greening.petPlant.dto.response.CreatePetPlantResponseDto;
 
 @Service
 @RequiredArgsConstructor
-public class PetPlantService {
+public class PetPlantCommandService {
 
     private final PetPlantRepository petPlantRepository;
 

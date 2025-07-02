@@ -14,7 +14,7 @@ import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.petPlant.dto.request.CreatePetPlantRequestDto;
 import swyp.team5.greening.petPlant.dto.response.CreatePetPlantResponseDto;
-import swyp.team5.greening.petPlant.service.PetPlantService;
+import swyp.team5.greening.petPlant.service.PetPlantCommandService;
 
 @Tag(name = "애완 식물 관련 API")
 @RestController
@@ -22,7 +22,7 @@ import swyp.team5.greening.petPlant.service.PetPlantService;
 @RequiredArgsConstructor
 public class PetPlantController {
 
-    private final PetPlantService petPlantService;
+    private final PetPlantCommandService petPlantCommandService;
 
     @Operation(summary = "게시글 작성 API")
     @PostMapping
@@ -31,7 +31,7 @@ public class PetPlantController {
             @LogIn Long userId,
             @Validated @RequestBody CreatePetPlantRequestDto requestDto
     ) {
-        return ApiResponseDto.of(petPlantService.createPetPlant(userId, requestDto));
+        return ApiResponseDto.of(petPlantCommandService.createPetPlant(userId, requestDto));
     }
 
 }
