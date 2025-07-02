@@ -13,12 +13,12 @@ public interface PetPlantJpaQueryRepository extends JpaRepository<PetPlant, Long
 
     @Override
     @Query("""
-           SELECT new swyp.team5.greening.petPlant.dto.response.FindAllPetPlantResponseDto(
-           petPlant.id, petPlant.name, petPlant.plantType, petPlant.createdAt)
-           FROM PetPlant petPlant
-           WHERE petPlant.userId = :loginUserId
-           AND petPlant.state = 'IN_PROGRESS'
-           """)
+            SELECT new swyp.team5.greening.petPlant.dto.response.FindAllPetPlantResponseDto(
+            petPlant.id, petPlant.name, petPlant.plantType, petPlant.createdAt)
+            FROM PetPlant petPlant
+            WHERE petPlant.userId = :loginUserId
+            AND petPlant.state = 'IN_PROGRESS'
+            """)
     List<FindAllPetPlantResponseDto> findMyPetPlants(
             @Param("loginUserId") Long loginUserId
     );

@@ -87,18 +87,18 @@ public class Post extends BaseTimeEntity {
     }
 
     public void increaseLikeCount() {
-        likeCount+=1;
+        likeCount += 1;
     }
 
     public void decreaseLikeCount() {
-        likeCount-=1;
+        likeCount -= 1;
     }
 
     public void increaseCommentCount() {
-        this.commentCount+=1;
+        this.commentCount += 1;
     }
 
     public void decreaseCommentCount() {
-        this.commentCount-=1;
+        this.commentCount -= 1;
     }
 }

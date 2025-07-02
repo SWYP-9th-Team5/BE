@@ -1,7 +1,7 @@
 package swyp.team5.greening.postLike.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +47,7 @@ class PostLikeCommandServiceTest {
         Post post = PostFixture.getPost(likeCount, userId);
 
         Like like = LikeFixture.getLike(postId, userId);
+
         @Test
         @DisplayName("게시글을 좋아요 한 상태라면, 좋아요가 취소되며 좋아요 수가 감소한다.")
         void likeCancelTest() {
@@ -63,7 +64,7 @@ class PostLikeCommandServiceTest {
 
             //then
             assertThat(responseDto.isLike()).isFalse();
-            assertThat(post.getLikeCount()).isEqualTo(likeCount-1);
+            assertThat(post.getLikeCount()).isEqualTo(likeCount - 1);
         }
 
         @Test
@@ -79,7 +80,7 @@ class PostLikeCommandServiceTest {
 
             //then
             assertThat(responseDto.isLike()).isTrue();
-            assertThat(post.getLikeCount()).isEqualTo(likeCount+1);
+            assertThat(post.getLikeCount()).isEqualTo(likeCount + 1);
         }
     }
 

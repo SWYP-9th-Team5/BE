@@ -28,14 +28,16 @@ public class LogInController {
     @PostMapping("/kakao")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<LoginResponseDto> kakaoLogin(@RequestBody LogInRequestDto requestDto) {
-        return ApiResponseDto.of(kakaoLogInService.kakaoLogin(requestDto.redirectURI(), requestDto.code()));
+        return ApiResponseDto.of(
+                kakaoLogInService.kakaoLogin(requestDto.redirectURI(), requestDto.code()));
     }
 
     @Operation(summary = "구글 로그인 API")
     @PostMapping("/google")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponseDto<LoginResponseDto> googleLogin(@RequestBody LogInRequestDto requestDto) {
-        return ApiResponseDto.of(googleLogInService.googleLogin(requestDto.redirectURI(), requestDto.code()));
+        return ApiResponseDto.of(
+                googleLogInService.googleLogin(requestDto.redirectURI(), requestDto.code()));
     }
 
 }

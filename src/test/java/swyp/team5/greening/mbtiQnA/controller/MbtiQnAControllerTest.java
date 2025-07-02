@@ -1,7 +1,7 @@
 package swyp.team5.greening.mbtiQnA.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,10 +51,14 @@ class MbtiQnAControllerTest extends ApiTestSupport {
             mbtiQuestion1 = MbtiQnAFixture.getMbtiQuestion(question1, 1);
             mbtiQuestion2 = MbtiQnAFixture.getMbtiQuestion(question2, 2);
 
-            mbtiAnswer1 = MbtiQnAFixture.getMbtiAnswer(answer1, MbtiAnswerType.A, MbtiEach.E, mbtiQuestion1);
-            mbtiAnswer2 = MbtiQnAFixture.getMbtiAnswer(answer2, MbtiAnswerType.B, MbtiEach.I, mbtiQuestion1);
-            mbtiAnswer3 = MbtiQnAFixture.getMbtiAnswer(answer3, MbtiAnswerType.A, MbtiEach.S, mbtiQuestion2);
-            mbtiAnswer4 = MbtiQnAFixture.getMbtiAnswer(answer4, MbtiAnswerType.B, MbtiEach.T, mbtiQuestion2);
+            mbtiAnswer1 = MbtiQnAFixture.getMbtiAnswer(answer1, MbtiAnswerType.A, MbtiEach.E,
+                    mbtiQuestion1);
+            mbtiAnswer2 = MbtiQnAFixture.getMbtiAnswer(answer2, MbtiAnswerType.B, MbtiEach.I,
+                    mbtiQuestion1);
+            mbtiAnswer3 = MbtiQnAFixture.getMbtiAnswer(answer3, MbtiAnswerType.A, MbtiEach.S,
+                    mbtiQuestion2);
+            mbtiAnswer4 = MbtiQnAFixture.getMbtiAnswer(answer4, MbtiAnswerType.B, MbtiEach.T,
+                    mbtiQuestion2);
 
             questionRepository.save(mbtiQuestion1);
             questionRepository.save(mbtiQuestion2);
@@ -76,13 +80,17 @@ class MbtiQnAControllerTest extends ApiTestSupport {
 
                     jsonPath("$.data[0].answers[0].mbtiAnswerId").value(mbtiAnswer1.getId()),
                     jsonPath("$.data[0].answers[0].answer").value(answer1),
-                    jsonPath("$.data[0].answers[0].answerType").value(mbtiAnswer1.getAnswerType().name()),
-                    jsonPath("$.data[0].answers[0].mbtiType").value(mbtiAnswer1.getMbtiEach().name()),
+                    jsonPath("$.data[0].answers[0].answerType").value(
+                            mbtiAnswer1.getAnswerType().name()),
+                    jsonPath("$.data[0].answers[0].mbtiType").value(
+                            mbtiAnswer1.getMbtiEach().name()),
 
                     jsonPath("$.data[0].answers[1].mbtiAnswerId").value(mbtiAnswer2.getId()),
                     jsonPath("$.data[0].answers[1].answer").value(answer2),
-                    jsonPath("$.data[0].answers[1].answerType").value(mbtiAnswer2.getAnswerType().name()),
-                    jsonPath("$.data[0].answers[1].mbtiType").value(mbtiAnswer2.getMbtiEach().name())
+                    jsonPath("$.data[0].answers[1].answerType").value(
+                            mbtiAnswer2.getAnswerType().name()),
+                    jsonPath("$.data[0].answers[1].mbtiType").value(
+                            mbtiAnswer2.getMbtiEach().name())
             );
         }
 

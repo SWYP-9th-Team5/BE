@@ -1,7 +1,9 @@
 package swyp.team5.greening.comment.controller;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -209,8 +211,8 @@ class CommentControllerTest extends ApiTestSupport {
             perform.andExpect(status().isBadRequest())
                     .andExpect(result ->
                             assertThat(result.getResolvedException()).getClass()
-                            .isAssignableFrom(
-                                    GreeningGlobalException.class));
+                                    .isAssignableFrom(
+                                            GreeningGlobalException.class));
         }
     }
 

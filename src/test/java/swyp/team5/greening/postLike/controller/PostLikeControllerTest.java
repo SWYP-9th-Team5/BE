@@ -1,7 +1,7 @@
 package swyp.team5.greening.postLike.controller;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,7 +75,7 @@ class PostLikeControllerTest extends ApiTestSupport {
                     jsonPath("$.data.isLike").value(true)
             );
 
-            assertThat(resultPost.getLikeCount()).isEqualTo(likeCount+1);
+            assertThat(resultPost.getLikeCount()).isEqualTo(likeCount + 1);
             assertThat(resultLike.getId()).isNotNull();
         }
 
@@ -104,7 +104,7 @@ class PostLikeControllerTest extends ApiTestSupport {
                     jsonPath("$.data.isLike").value(false)
             );
 
-            assertThat(resultPost.getLikeCount()).isEqualTo(likeCount-1);
+            assertThat(resultPost.getLikeCount()).isEqualTo(likeCount - 1);
             assertThat(resultLike.getId()).isNull();
         }
     }

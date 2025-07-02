@@ -49,4 +49,8 @@ public class PetPlant extends BaseTimeEntity {
         this.state = state;
         this.userId = userId;
     }
+
+    public void deletePetPlant() {
+        this.state = PetPlantState.DELETED;
+    }
 }

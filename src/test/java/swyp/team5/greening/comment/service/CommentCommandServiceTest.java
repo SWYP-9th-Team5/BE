@@ -1,7 +1,11 @@
 package swyp.team5.greening.comment.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.times;
+import static org.mockito.BDDMockito.verify;
 
 import java.util.Optional;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -20,11 +24,11 @@ import swyp.team5.greening.comment.dto.request.SaveCommentRequestDto;
 import swyp.team5.greening.comment.dto.request.UpdateCommentRequestDto;
 import swyp.team5.greening.comment.dto.response.SaveCommentResponseDto;
 import swyp.team5.greening.comment.exception.CommentExceptionMessage;
+import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
-import swyp.team5.greening.post.exception.PostExceptionMessage;
-import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.repository.PostRepository;
+import swyp.team5.greening.post.exception.PostExceptionMessage;
 
 @DisplayName("댓글 단위 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -67,7 +71,8 @@ class CommentCommandServiceTest {
         @DisplayName("사용자는 게시물에 댓글을 작성할 수 있다. 이 때 게시물의 댓글 수가 증가한다.")
         void testCase1() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.of(postEntity));
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+                    Optional.of(postEntity));
             given(commentRepository.save(any(Comment.class))).willReturn(commentEntity);
             ReflectionTestUtils.setField(postEntity, "id", postId);
             ReflectionTestUtils.setField(commentEntity, "id", commentId);
@@ -87,10 +92,12 @@ class CommentCommandServiceTest {
         @DisplayName("게시물이 존재하지 않을 경우, 예외가 발생한다.")
         void testCase2() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.empty());
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+                    Optional.empty());
 
             //when
-            ThrowingCallable when = () -> commentCommandService.saveComment(userId, new SaveCommentRequestDto(postId, comment));
+            ThrowingCallable when = () -> commentCommandService.saveComment(userId,
+                    new SaveCommentRequestDto(postId, comment));
 
             //then
             verify(commentRepository, times(0)).save(any(Comment.class));
@@ -132,7 +139,8 @@ class CommentCommandServiceTest {
             given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
 
             //when
-            commentCommandService.updateComment(userId, new UpdateCommentRequestDto(commentId, newComment));
+            commentCommandService.updateComment(userId,
+                    new UpdateCommentRequestDto(commentId, newComment));
 
             //then
             assertThat(testComment.getComment()).isEqualTo(newComment);
@@ -147,20 +155,23 @@ class CommentCommandServiceTest {
             given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
 
             //when
-            ThrowingCallable throwingCallable = () -> commentCommandService.updateComment(anotherUserId,
+            ThrowingCallable throwingCallable = () -> commentCommandService.updateComment(
+                    anotherUserId,
                     new UpdateCommentRequestDto(commentId, newComment));
 
             //then
             assertThatThrownBy(throwingCallable)
                     .isInstanceOf(GreeningGlobalException.class)
-                    .hasMessageContaining(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER.getMessage());
+                    .hasMessageContaining(
+                            CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER.getMessage());
         }
 
         @Test
         @DisplayName("댓글 삭제할 수 있다. 이 때 게시글의 댓글 수는 감소한다.")
         void testCase3() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(Optional.of(postEntity));
+            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+                    Optional.of(postEntity));
             given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
 
             //when

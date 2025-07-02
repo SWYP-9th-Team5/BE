@@ -39,8 +39,8 @@ public final class PostFixture {
     private static void getPostContents(Post post) {
         for (int i = 1; i <= 5; i++) {
             PostContent.builder()
-                    .content(i%2==0? "하용": "image")
-                    .type(i%2==0? PostType.TEXT:PostType.IMAGE)
+                    .content(i % 2 == 0 ? "하용" : "image")
+                    .type(i % 2 == 0 ? PostType.TEXT : PostType.IMAGE)
                     .sequence(i)
                     .post(post)
                     .build();

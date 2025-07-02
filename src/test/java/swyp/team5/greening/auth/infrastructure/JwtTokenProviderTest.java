@@ -1,7 +1,7 @@
 package swyp.team5.greening.auth.infrastructure;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private final String tempClientSecret = "aa583c37e87dc22de563838c6ab1175ba8f253c87dfdf51c13cd3a4d28999825";
-    private final long tempAccessExpiryTime  = 3000L;
+    private final long tempAccessExpiryTime = 3000L;
 
     private Long id;
 
