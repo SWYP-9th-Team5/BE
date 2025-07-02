@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
@@ -35,4 +36,17 @@ public class PetPlant extends BaseTimeEntity {
 
     @Column(name = "user_id")
     private Long userId;
+
+    @Builder
+    public PetPlant(
+            String name,
+            String plantType,
+            PetPlantState state,
+            Long userId
+    ) {
+        this.name = name;
+        this.plantType = plantType;
+        this.state = state;
+        this.userId = userId;
+    }
 }
