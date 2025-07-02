@@ -1,11 +1,14 @@
 package swyp.team5.greening.post.controller;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -55,7 +58,7 @@ class PostControllerTest extends ApiTestSupport {
 
     @DisplayName("게시물이 존재하지 않는다.")
     @Nested
-    class TestCase1{
+    class TestCase1 {
 
         CreatePostRequestDto requestDto;
 
@@ -190,7 +193,7 @@ class PostControllerTest extends ApiTestSupport {
             // then
             perform.andExpect(result ->
                     assertThat(result.getResolvedException().getClass())
-                    .isAssignableFrom(GreeningGlobalException.class));
+                            .isAssignableFrom(GreeningGlobalException.class));
         }
 
         @Test

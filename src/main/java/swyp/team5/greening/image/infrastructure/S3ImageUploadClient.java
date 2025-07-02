@@ -38,17 +38,17 @@ public class S3ImageUploadClient {
     }
 
     private String uploadImage(MultipartFile image) {
-        try{
+        try {
             String uploadImageFileName = makeUploadImageFileName(image.getOriginalFilename());
 
-            ObjectMetadata metadata= new ObjectMetadata();
+            ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(image.getContentType());
             metadata.setContentLength(image.getSize());
             amazonS3Client.putObject(BUCKET, uploadImageFileName,
                     image.getInputStream(), metadata);
 
             return uploadImageFileName;
-        }catch(IOException e){
+        } catch (IOException e) {
             return null;
         }
     }

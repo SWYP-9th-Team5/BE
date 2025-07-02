@@ -25,7 +25,7 @@ public interface CommentJpaQueryRepository extends JpaRepository<Comment, Long>,
               ON post.id = comment.postId
            WHERE post.id = :postId
            ORDER BY comment.createdAt desc, comment.id asc
-    """)
+           """)
     Page<FindAllCommentResponseDto> findAllComment(
             @Param("userId") Long userId,
             @Param("postId") Long postId,
@@ -42,7 +42,7 @@ public interface CommentJpaQueryRepository extends JpaRepository<Comment, Long>,
                ON comment.postId = post.id
            WHERE comment.userId = :loginUserId
            ORDER BY comment.createdAt desc, comment.id asc
-    """)
+           """)
     Page<FindMyAllCommentResponseDto> findMyComments(
             @Param("loginUserId") Long loginUserId,
             Pageable pageable

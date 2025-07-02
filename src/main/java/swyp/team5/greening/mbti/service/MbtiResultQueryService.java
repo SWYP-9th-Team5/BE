@@ -34,7 +34,7 @@ public class MbtiResultQueryService {
                 resultPlant.getUnsuitablePlant(),
                 resultPlant.getRecommendedPlant(),
                 plantImage.getPlantImageUrl()
-                );
+        );
     }
 
 }

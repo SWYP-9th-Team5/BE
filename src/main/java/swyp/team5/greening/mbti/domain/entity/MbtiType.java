@@ -13,7 +13,7 @@ public enum MbtiType {
     public static MbtiType of(String input) {
         try {
             return MbtiType.valueOf(input);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new GreeningGlobalException(MbtiExceptionMessage.NOT_FOUND_MBTI_TYPE);
         }
     }

@@ -7,9 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.repository.PostQueryRepository;
+import swyp.team5.greening.post.dto.data.FindPostDto;
 import swyp.team5.greening.post.dto.response.FindAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindMyAllPostResponseDto;
 import swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto;
@@ -99,7 +99,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
             WHERE post.userId = :loginUserId
                 AND post.state = 'IN_PROGRESS'
             ORDER BY post.createdAt desc
-    """)
+          """)
     Page<FindMyAllPostResponseDto> findMyPosts(
             @Param("loginUserId") Long loginUserId,
             Pageable pageable
