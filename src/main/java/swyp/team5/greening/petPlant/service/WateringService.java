@@ -53,9 +53,9 @@ public class WateringService {
                 .writeDate(today)
                 .petPlantId(petPlantId)
                 .build();
-        wateringRepository.save(watering);
+        Watering savedWatering = wateringRepository.save(watering);
 
-        return new WateringPlantResponseDto(watering.getId());
+        return new WateringPlantResponseDto(savedWatering.getId());
     }
 
 }
