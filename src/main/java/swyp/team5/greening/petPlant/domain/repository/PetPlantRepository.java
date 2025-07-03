@@ -10,4 +10,5 @@ public interface PetPlantRepository {
 
     Optional<PetPlant> findByIdAndState(Long id, PetPlantState state);
 
+    void deleteAll();
 }
