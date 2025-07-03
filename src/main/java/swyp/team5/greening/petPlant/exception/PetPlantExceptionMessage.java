@@ -9,7 +9,10 @@ import swyp.team5.greening.common.exception.ExceptionMessage;
 public enum PetPlantExceptionMessage implements ExceptionMessage {
 
     NOT_FOUND_PET_PLANT("존재하지 않는 애완 식물입니다.", "404"),
-    BAD_REQUEST_PET_PLANT_WRITER("내가 등록한 애완 식물이 아닙니다.", "400");
+    BAD_REQUEST_PET_PLANT_WRITER("내가 등록한 애완 식물이 아닙니다.", "400"),
+
+    INVALID_DATE_ACCESS("해당 날짜에만 접근 가능합니다.", "400");
+
 
     private final String message;
     private final String code;

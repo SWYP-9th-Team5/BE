@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
@@ -28,4 +29,12 @@ public class Watering extends BaseTimeEntity {
     @Column(name = "write_date")
     private LocalDate writeDate;
 
+    @Builder
+    public Watering(
+            Long petPlantId,
+            LocalDate writeDate
+    ) {
+        this.petPlantId = petPlantId;
+        this.writeDate = writeDate;
+    }
 }
