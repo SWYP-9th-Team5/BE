@@ -1,0 +1,40 @@
+package swyp.team5.greening.petPlant.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import swyp.team5.greening.common.dto.response.ApiResponseDto;
+import swyp.team5.greening.common.resolver.LogIn;
+import swyp.team5.greening.petPlant.dto.request.CreateDailyRecordRequestDto;
+import swyp.team5.greening.petPlant.dto.response.CreateDailyRecordResponseDto;
+import swyp.team5.greening.petPlant.service.DailyRecordCommandService;
+
+@Tag(name = "애완 식물 오늘의 기록 API")
+@RestController
+@RequestMapping("/api/pet-plants")
+@RequiredArgsConstructor
+public class DailyRecordController {
+
+    private final DailyRecordCommandService dailyRecordCommandService;
+
+    @Operation(summary = "특정 애완 식물 오늘의 기록 작성 API")
+    @PostMapping("/{petPlantId}/daily-record")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<CreateDailyRecordResponseDto> createDailyRecord(
+            @LogIn Long userId,
+            @PathVariable Long petPlantId,
+            @Validated @RequestBody CreateDailyRecordRequestDto requestDto
+    ) {
+        return ApiResponseDto.of(
+                dailyRecordCommandService.createDailyRecord(userId, petPlantId, requestDto));
+    }
+
+}

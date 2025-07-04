@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
@@ -38,4 +39,25 @@ public class DailyRecord extends BaseTimeEntity {
     @OneToMany(mappedBy = "dailyRecord", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private final List<DailyRecordContent> dailyRecordContents = new ArrayList<>();
 
+    @Builder
+    public DailyRecord(
+            String title,
+            LocalDate writeDate,
+            Long petPlantId
+    ) {
+        this.title = title;
+        this.writeDate = writeDate;
+        this.petPlantId = petPlantId;
+    }
+
+    public void updateContent(List<DailyRecordContent> contents) {
+        dailyRecordContents.clear();
+
+        int index = 1;
+
+        for (DailyRecordContent content : contents) {
+            content.setDailyRecord(this);
+            content.setSequence(index);
+        }
+    }
 }
