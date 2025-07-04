@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostContent;
-import swyp.team5.greening.post.domain.entity.PostType;
+import swyp.team5.greening.post.dto.PostContentDto;
 import swyp.team5.greening.user.domain.entity.User;
 
 public record FindPostResponseDto(
@@ -18,7 +18,7 @@ public record FindPostResponseDto(
         Long commentCount,
         boolean isLike,
         boolean isAuthor,
-        List<ContentDto> content
+        List<PostContentDto> content
 ) {
 
     public static FindPostResponseDto of(
@@ -41,12 +41,8 @@ public record FindPostResponseDto(
                 isLike,
                 isAuthor,
                 postContents.stream()
-                        .map(content -> new ContentDto(content.getType(), content.getContent()))
+                        .map(content -> new PostContentDto(content.getType().name(), content.getContent()))
                         .toList()
         );
-    }
-
-    public record ContentDto(PostType type, String value) {
-
     }
 }

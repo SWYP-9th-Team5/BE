@@ -19,7 +19,7 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
-import swyp.team5.greening.post.dto.request.ContentDto;
+import swyp.team5.greening.post.dto.PostContentDto;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.response.CreatePostResponseDto;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
@@ -37,9 +37,9 @@ class PostCommandServiceTest {
     private final Long userId = 1L;
     private final String title = "테스트 게시글";
     private final Long categoryId = 5L;
-    private final List<ContentDto> contentList = List.of(
-            new ContentDto("TEXT", "본문1"),
-            new ContentDto("IMAGE", "http://image.com/test.jpg")
+    private final List<PostContentDto> contentList = List.of(
+            new PostContentDto("TEXT", "본문1"),
+            new PostContentDto("IMAGE", "http://image.com/test.jpg")
     );
 
     @Nested

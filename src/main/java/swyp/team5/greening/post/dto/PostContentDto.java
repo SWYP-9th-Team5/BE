@@ -1,8 +1,8 @@
-package swyp.team5.greening.post.dto.request;
+package swyp.team5.greening.post.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public record ContentDto(
+public record PostContentDto(
         @NotEmpty
         String type,
 
