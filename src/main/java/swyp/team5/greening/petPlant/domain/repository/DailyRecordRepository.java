@@ -6,4 +6,5 @@ public interface DailyRecordRepository {
 
     DailyRecord save(DailyRecord dailyRecord);
 
+    void deleteAll();
 }
