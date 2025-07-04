@@ -44,6 +44,7 @@ class WateringServiceTest {
     @Nested
     @DisplayName("사용자는 애완 식물 1개를 등록한 상태이다.")
     class TestCase1 {
+
         private final Long userId = 1L;
         private final Long anotherUserId = 3L;
         private final String name = "귀요미";
