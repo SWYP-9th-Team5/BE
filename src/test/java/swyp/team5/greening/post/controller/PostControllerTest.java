@@ -23,7 +23,7 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
-import swyp.team5.greening.post.dto.request.ContentDto;
+import swyp.team5.greening.post.dto.PostContentDto;
 import swyp.team5.greening.post.dto.request.CreatePostRequestDto;
 import swyp.team5.greening.post.dto.request.UpdatePostRequestDto;
 import swyp.team5.greening.post.fixture.PostFixture;
@@ -47,6 +47,7 @@ class PostControllerTest extends ApiTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -62,15 +63,15 @@ class PostControllerTest extends ApiTestSupport {
 
         CreatePostRequestDto requestDto;
 
-        List<ContentDto> contents;
+        List<PostContentDto> contents;
 
         @BeforeEach
         void setUp() {
             contents = List.of(
-                    new ContentDto("TEXT", "1번 텍스트"),
-                    new ContentDto("IMAGE", "https://example.com/1.png"),
-                    new ContentDto("TEXT", "2번 텍스트"),
-                    new ContentDto("IMAGE", "https://example.com/2.png")
+                    new PostContentDto("TEXT", "1번 텍스트"),
+                    new PostContentDto("IMAGE", "https://example.com/1.png"),
+                    new PostContentDto("TEXT", "2번 텍스트"),
+                    new PostContentDto("IMAGE", "https://example.com/2.png")
             );
 
             requestDto = new CreatePostRequestDto("테스트 게시글", 1L, contents);
@@ -146,7 +147,7 @@ class PostControllerTest extends ApiTestSupport {
         void updatePost() throws Exception {
             // given
             String updateTitle = "수정된 제목";
-            List<ContentDto> updateContents = List.of(new ContentDto("TEXT", "수정된 내용"));
+            List<PostContentDto> updateContents = List.of(new PostContentDto("TEXT", "수정된 내용"));
 
             UpdatePostRequestDto requestDto = new UpdatePostRequestDto(updateTitle, updateContents);
 
@@ -180,7 +181,7 @@ class PostControllerTest extends ApiTestSupport {
             String anotherUserToken = jwtTokenProvider.createToken(anotherUser.getId());
 
             String updateTitle = "수정된 제목";
-            List<ContentDto> updateContents = List.of(new ContentDto("TEXT", "수정된 내용"));
+            List<PostContentDto> updateContents = List.of(new PostContentDto("TEXT", "수정된 내용"));
 
             UpdatePostRequestDto requestDto = new UpdatePostRequestDto(updateTitle, updateContents);
 

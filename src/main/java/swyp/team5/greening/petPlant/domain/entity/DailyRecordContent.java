@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import swyp.team5.greening.common.base.BaseTimeEntity;
@@ -39,4 +40,22 @@ public class DailyRecordContent extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_record_id")
     private DailyRecord dailyRecord;
+
+    @Builder
+    public DailyRecordContent(
+            String content,
+            DailyRecordContentType type
+    ) {
+        this.content = content;
+        this.type = type;
+    }
+
+    public void setDailyRecord(DailyRecord dailyRecord) {
+        this.dailyRecord = dailyRecord;
+        dailyRecord.getDailyRecordContents().add(this);
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
 }

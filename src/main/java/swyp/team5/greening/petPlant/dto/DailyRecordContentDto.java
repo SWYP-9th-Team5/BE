@@ -1,8 +1,8 @@
-package swyp.team5.greening.post.dto.request;
+package swyp.team5.greening.petPlant.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public record ContentDto(
+public record DailyRecordContentDto(
         @NotEmpty
         String type,
 
