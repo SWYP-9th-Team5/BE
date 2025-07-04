@@ -47,6 +47,7 @@ class PostControllerTest extends ApiTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 

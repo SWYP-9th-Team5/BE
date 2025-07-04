@@ -1,6 +1,7 @@
 package swyp.team5.greening.petPlant.controller;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +70,7 @@ class WateringControllerTest extends ApiTestSupport {
         @DisplayName("사용자는 자신의 애완 식물의 '물 주기 스탬프'를 등록할 수 있다.")
         void wateringPlant1() throws Exception {
             //given
-            BDDMockito.given(nowDate.get()).willReturn(now);
+            given(nowDate.get()).willReturn(now);
 
             //when
             ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post(
@@ -101,7 +101,7 @@ class WateringControllerTest extends ApiTestSupport {
                     .build();
             petPlantRepository.save(anotherPetPlant);
 
-            BDDMockito.given(nowDate.get()).willReturn(now);
+            given(nowDate.get()).willReturn(now);
 
             //when
             ResultActions perform = mockMvc.perform(MockMvcRequestBuilders.post(
@@ -123,7 +123,7 @@ class WateringControllerTest extends ApiTestSupport {
         @DisplayName("오늘이 아닌 날짜의 '물 주기 스탬프'를 등록할 수 없다.")
         void wateringPlant3() throws Exception{
             //given
-            BDDMockito.given(nowDate.get()).willReturn(now);
+            given(nowDate.get()).willReturn(now);
 
             //when
             ResultActions perform = mockMvc.perform(MockMvcRequestBuilders.post(
