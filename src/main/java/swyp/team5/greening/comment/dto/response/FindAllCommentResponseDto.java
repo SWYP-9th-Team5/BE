@@ -12,7 +12,7 @@ public record FindAllCommentResponseDto(
 
         String comment,
 
-        @JsonFormat(pattern = "YYYY-MM-DD'T'hh:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
         LocalDateTime createdAt,
 
         boolean isWriter
