@@ -11,6 +11,7 @@ import swyp.team5.greening.common.exception.GreeningGlobalException;
 import swyp.team5.greening.petPlant.domain.entity.DailyRecord;
 import swyp.team5.greening.petPlant.domain.entity.DailyRecordContent;
 import swyp.team5.greening.petPlant.domain.entity.DailyRecordContentType;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecordState;
 import swyp.team5.greening.petPlant.domain.entity.PetPlant;
 import swyp.team5.greening.petPlant.domain.entity.PetPlantState;
 import swyp.team5.greening.petPlant.domain.repository.DailyRecordRepository;
@@ -59,6 +60,7 @@ public class DailyRecordCommandService {
         DailyRecord dailyRecord = DailyRecord.builder()
                 .title(requestDto.title())
                 .writeDate(requestDto.today())
+                .state(DailyRecordState.IN_PROGRESS)
                 .petPlantId(petPlantId)
                 .build();
 

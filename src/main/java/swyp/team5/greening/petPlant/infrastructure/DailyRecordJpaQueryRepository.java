@@ -18,6 +18,7 @@ public interface DailyRecordJpaQueryRepository extends JpaRepository<DailyRecord
             WHERE dailyRecord.petPlantId = :petPlantId
             AND dailyRecord.writeDate >= :startDate
             AND dailyRecord.writeDate < :endDate
+            AND dailyRecord.state = 'IN_PROGRESS'
             ORDER BY dailyRecord.writeDate asc
             """)
     List<DailyRecord> findByPetPlantAndWriteDate(
