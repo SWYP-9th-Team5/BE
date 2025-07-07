@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.ResultActions;
 import swyp.team5.greening.petPlant.domain.entity.DailyRecord;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecordState;
 import swyp.team5.greening.petPlant.domain.entity.PetPlant;
 import swyp.team5.greening.petPlant.domain.entity.PetPlantState;
 import swyp.team5.greening.petPlant.domain.entity.Watering;
@@ -71,6 +72,7 @@ class PetPlantControllerTest extends ApiTestSupport {
             day5DailyRecord = DailyRecord.builder()
                     .title("제목")
                     .writeDate(day5)
+                    .state(DailyRecordState.IN_PROGRESS)
                     .petPlantId(petPlant.getId())
                     .build();
             dailyRecordRepository.save(day5DailyRecord);

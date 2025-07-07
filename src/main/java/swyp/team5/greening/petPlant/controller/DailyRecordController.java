@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,9 @@ import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.petPlant.dto.request.CreateDailyRecordRequestDto;
 import swyp.team5.greening.petPlant.dto.response.CreateDailyRecordResponseDto;
+import swyp.team5.greening.petPlant.dto.response.FindDailyRecordResponseDto;
 import swyp.team5.greening.petPlant.service.DailyRecordCommandService;
+import swyp.team5.greening.petPlant.service.DailyRecordQueryService;
 
 @Tag(name = "애완 식물 오늘의 기록 API")
 @RestController
@@ -24,6 +27,7 @@ import swyp.team5.greening.petPlant.service.DailyRecordCommandService;
 public class DailyRecordController {
 
     private final DailyRecordCommandService dailyRecordCommandService;
+    private final DailyRecordQueryService dailyRecordQueryService;
 
     @Operation(summary = "특정 애완 식물 오늘의 기록 작성 API")
     @PostMapping("/{petPlantId}/daily-record")
@@ -34,7 +38,24 @@ public class DailyRecordController {
             @Validated @RequestBody CreateDailyRecordRequestDto requestDto
     ) {
         return ApiResponseDto.of(
-                dailyRecordCommandService.createDailyRecord(userId, petPlantId, requestDto));
+                dailyRecordCommandService.createDailyRecord(
+                        userId,
+                        petPlantId,
+                        requestDto
+                ));
+    }
+
+    @Operation(summary = "특정 애완 식물 특정 오늘의 기록 조회 API")
+    @GetMapping("/daily-record/{dailyRecordId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseDto<FindDailyRecordResponseDto> getDailyRecord(
+            @LogIn Long userId,
+            @PathVariable Long dailyRecordId
+    ) {
+        return ApiResponseDto.of(dailyRecordQueryService.findDailyRecord(
+                userId,
+                dailyRecordId
+        ));
     }
 
 }

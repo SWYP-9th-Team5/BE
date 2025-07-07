@@ -3,6 +3,8 @@ package swyp.team5.greening.petPlant.domain.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +35,10 @@ public class DailyRecord extends BaseTimeEntity {
     @Column(name = "write_date")
     private LocalDate writeDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private DailyRecordState state;
+
     @Column(name = "pet_plant_id")
     private Long petPlantId;
 
@@ -43,10 +49,12 @@ public class DailyRecord extends BaseTimeEntity {
     public DailyRecord(
             String title,
             LocalDate writeDate,
+            DailyRecordState state,
             Long petPlantId
     ) {
         this.title = title;
         this.writeDate = writeDate;
+        this.state = state;
         this.petPlantId = petPlantId;
     }
 
