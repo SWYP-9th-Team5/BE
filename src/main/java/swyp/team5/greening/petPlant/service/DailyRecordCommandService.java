@@ -17,6 +17,7 @@ import swyp.team5.greening.petPlant.domain.entity.PetPlantState;
 import swyp.team5.greening.petPlant.domain.repository.DailyRecordRepository;
 import swyp.team5.greening.petPlant.domain.repository.PetPlantRepository;
 import swyp.team5.greening.petPlant.dto.request.CreateDailyRecordRequestDto;
+import swyp.team5.greening.petPlant.dto.request.UpdateDailyRecordRequestDto;
 import swyp.team5.greening.petPlant.dto.response.CreateDailyRecordResponseDto;
 import swyp.team5.greening.petPlant.exception.PetPlantExceptionMessage;
 
@@ -76,6 +77,44 @@ public class DailyRecordCommandService {
         DailyRecord saved = dailyRecordRepository.save(dailyRecord);
 
         return new CreateDailyRecordResponseDto(saved.getId());
+    }
+
+    //게시글 수정
+    //1. 오늘의 기록 조회
+    //2. 권한 확인
+    //3. 제목 수정
+    //4. 새로운 본문 저장
+    @Transactional
+    public void updateDailyRecord(
+            Long userId,
+            Long dailyRecordId,
+            UpdateDailyRecordRequestDto requestDto
+
+    ) {
+        DailyRecord dailyRecord = dailyRecordRepository.findByIdAndState(dailyRecordId,
+                        DailyRecordState.IN_PROGRESS)
+                .orElseThrow(() -> new GreeningGlobalException(
+                        PetPlantExceptionMessage.NOT_FOUND_PET_PLANT));
+
+        PetPlant petPlant = petPlantRepository.findByIdAndState(dailyRecord.getPetPlantId(),
+                        PetPlantState.IN_PROGRESS)
+                .orElseThrow(() -> new GreeningGlobalException(
+                        PetPlantExceptionMessage.NOT_FOUND_PET_PLANT));
+
+        if (!Objects.equals(petPlant.getUserId(), userId)) {
+            throw new GreeningGlobalException(PetPlantExceptionMessage.BAD_REQUEST_PET_PLANT_WRITER);
+        }
+
+        dailyRecord.updateTitle(requestDto.title());
+
+        List<DailyRecordContent> contents = requestDto.content().stream()
+                .map(dto -> DailyRecordContent.builder()
+                        .content(dto.value())
+                        .type(DailyRecordContentType.valueOf(dto.type().toUpperCase()))
+                        .build())
+                .toList();
+
+        dailyRecord.updateContent(contents);
     }
 
 }
