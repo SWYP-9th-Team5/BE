@@ -28,6 +28,7 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
                 ON likes.userId = :userId
                 AND likes.postId = post.id
             WHERE post.id = :postId
+                AND post.state = 'IN_PROGRESS'
             """)
     Optional<FindPostDto> findPost(
             @Param("postId") Long postId,
