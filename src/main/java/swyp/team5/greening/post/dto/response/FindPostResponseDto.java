@@ -1,6 +1,7 @@
 package swyp.team5.greening.post.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import swyp.team5.greening.post.domain.entity.Post;
 import swyp.team5.greening.post.domain.entity.PostContent;
@@ -41,7 +42,9 @@ public record FindPostResponseDto(
                 isLike,
                 isAuthor,
                 postContents.stream()
-                        .map(content -> new PostContentDto(content.getType().name(), content.getContent()))
+                        .sorted(Comparator.comparing(PostContent::getSequence))
+                        .map(content ->
+                                new PostContentDto(content.getType().name(), content.getContent()))
                         .toList()
         );
     }
