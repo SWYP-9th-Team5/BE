@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,12 +64,22 @@ public class DailyRecordController {
     @Operation(summary = "특정 애완 식물 오늘의 기록 수정 API")
     @PutMapping("/daily-record/{dailyRecordId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateDailyRecord (
+    public void updateDailyRecord(
             @LogIn Long userId,
             @PathVariable Long dailyRecordId,
             @Validated @RequestBody UpdateDailyRecordRequestDto requestDto
     ) {
         dailyRecordCommandService.updateDailyRecord(userId, dailyRecordId, requestDto);
+    }
+
+    @Operation(summary = "특정 애완 식물 오늘의 기록 삭제 API")
+    @DeleteMapping("/daily-record/{dailyRecordId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDailyRecord(
+            @LogIn Long userId,
+            @PathVariable Long dailyRecordId
+    ) {
+        dailyRecordCommandService.deleteDailyRecord(userId, dailyRecordId);
     }
 
 }

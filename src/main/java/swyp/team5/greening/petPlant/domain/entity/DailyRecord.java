@@ -72,4 +72,8 @@ public class DailyRecord extends BaseTimeEntity {
             content.setSequence(index);
         }
     }
+
+    public void delete() {
+        this.state = DailyRecordState.DELETED;
+    }
 }
