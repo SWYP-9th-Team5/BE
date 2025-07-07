@@ -18,6 +18,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import swyp.team5.greening.common.exception.GreeningGlobalException;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecord;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecordContent;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecordContentType;
+import swyp.team5.greening.petPlant.domain.entity.DailyRecordState;
 import swyp.team5.greening.petPlant.domain.entity.PetPlant;
 import swyp.team5.greening.petPlant.domain.entity.PetPlantState;
 import swyp.team5.greening.petPlant.domain.repository.DailyRecordRepository;
@@ -26,7 +30,6 @@ import swyp.team5.greening.petPlant.dto.DailyRecordContentDto;
 import swyp.team5.greening.petPlant.dto.request.CreateDailyRecordRequestDto;
 import swyp.team5.greening.petPlant.exception.PetPlantExceptionMessage;
 import swyp.team5.greening.support.ApiTestSupport;
-import swyp.team5.greening.user.domain.repository.UserRepository;
 
 class DailyRecordControllerTest extends ApiTestSupport {
 
@@ -38,9 +41,6 @@ class DailyRecordControllerTest extends ApiTestSupport {
 
     @Autowired
     private DailyRecordRepository dailyRecordRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     void init() {
@@ -158,6 +158,58 @@ class DailyRecordControllerTest extends ApiTestSupport {
                     result ->
                             assertThat(result.getResolvedException()
                                     .getClass().isAssignableFrom(GreeningGlobalException.class)));
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자는 애완 식물 1개에 대해 오늘의 기록을 1개 작성한 상태이다.")
+    class TestCase2 {
+
+        PetPlant petPlant;
+
+        DailyRecord dailyRecord;
+
+        List<DailyRecordContent> contents;
+
+        @BeforeEach
+        void setUp() {
+            petPlant = PetPlant.builder()
+                    .name("이름")
+                    .plantType("민들레")
+                    .state(PetPlantState.IN_PROGRESS)
+                    .userId(loginUser.getId())
+                    .build();
+            petPlantRepository.save(petPlant);
+
+            dailyRecord = DailyRecord.builder()
+                    .title("오늘의 일기 7/3")
+                    .writeDate(LocalDate.of(2025, 7, 3))
+                    .state(DailyRecordState.IN_PROGRESS)
+                    .petPlantId(petPlant.getId())
+                    .build();
+
+            contents = List.of(DailyRecordContent.builder()
+                    .type(DailyRecordContentType.TEXT)
+                    .content("3cm 컸다.")
+                    .build());
+
+            dailyRecord.updateContent(contents);
+            dailyRecordRepository.save(dailyRecord);
+        }
+
+        @Test
+        @DisplayName("사용자는 자신이 작성한 오늘의 기록을 조회할 수 있다.")
+        void getDailyRecord1() throws Exception {
+            //when
+            ResultActions perform = mockMvc.perform(
+                    get("/api/pet-plants/daily-record/{dailyRecord}", dailyRecord.getId())
+                            .header(HttpHeaders.AUTHORIZATION, accessToken));
+
+            //then
+            perform.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.title").value(dailyRecord.getTitle()))
+                    .andExpect(jsonPath("$.data.content.size()").value(1))
+                    .andExpect(jsonPath("$.data.content[0].value").value(contents.get(0).getContent()));
         }
     }
 
