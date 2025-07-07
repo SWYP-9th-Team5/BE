@@ -58,6 +58,10 @@ public class DailyRecord extends BaseTimeEntity {
         this.petPlantId = petPlantId;
     }
 
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+    }
+
     public void updateContent(List<DailyRecordContent> contents) {
         dailyRecordContents.clear();
 
@@ -67,5 +71,9 @@ public class DailyRecord extends BaseTimeEntity {
             content.setDailyRecord(this);
             content.setSequence(index);
         }
+    }
+
+    public void delete() {
+        this.state = DailyRecordState.DELETED;
     }
 }

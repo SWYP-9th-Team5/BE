@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import swyp.team5.greening.common.dto.response.ApiResponseDto;
 import swyp.team5.greening.common.resolver.LogIn;
 import swyp.team5.greening.petPlant.dto.request.CreateDailyRecordRequestDto;
+import swyp.team5.greening.petPlant.dto.request.UpdateDailyRecordRequestDto;
 import swyp.team5.greening.petPlant.dto.response.CreateDailyRecordResponseDto;
 import swyp.team5.greening.petPlant.dto.response.FindDailyRecordResponseDto;
 import swyp.team5.greening.petPlant.service.DailyRecordCommandService;
@@ -56,6 +59,27 @@ public class DailyRecordController {
                 userId,
                 dailyRecordId
         ));
+    }
+
+    @Operation(summary = "특정 애완 식물 오늘의 기록 수정 API")
+    @PutMapping("/daily-record/{dailyRecordId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateDailyRecord(
+            @LogIn Long userId,
+            @PathVariable Long dailyRecordId,
+            @Validated @RequestBody UpdateDailyRecordRequestDto requestDto
+    ) {
+        dailyRecordCommandService.updateDailyRecord(userId, dailyRecordId, requestDto);
+    }
+
+    @Operation(summary = "특정 애완 식물 오늘의 기록 삭제 API")
+    @DeleteMapping("/daily-record/{dailyRecordId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDailyRecord(
+            @LogIn Long userId,
+            @PathVariable Long dailyRecordId
+    ) {
+        dailyRecordCommandService.deleteDailyRecord(userId, dailyRecordId);
     }
 
 }
