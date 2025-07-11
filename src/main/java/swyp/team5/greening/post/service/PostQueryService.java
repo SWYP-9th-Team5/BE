@@ -2,6 +2,7 @@ package swyp.team5.greening.post.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +45,7 @@ public class PostQueryService {
     // 홈 화면 게시글
     @Transactional(readOnly = true)
     public List<FindPostPreviewResponseDto> findLatestPostByCategory(Long userId) {
-        return List.of(1L, 2L, 3L).stream()
+        return Stream.of(1L, 2L, 3L)
                 .flatMap(categoryId ->
                         postQueryRepository.findTop6TodayByCategoryWithUserName(userId, categoryId)
                                 .stream())
