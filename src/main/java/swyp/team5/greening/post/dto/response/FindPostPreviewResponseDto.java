@@ -12,8 +12,7 @@ public record FindPostPreviewResponseDto(
         Long likeCount,
         Long commentCount,
         LocalDateTime createdAt,
-        LocalDateTime lastModifiedAt,
-        boolean isLike
+        LocalDateTime lastModifiedAt
 ) {
 
 }

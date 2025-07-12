@@ -246,10 +246,8 @@ class PostControllerTest extends ApiTestSupport {
             mockMvc.perform(get("/api/posts/home"))
                     .andExpect(jsonPath("$.data.size()").value(2))
                     .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
-                    .andExpect(jsonPath("$.data[0].isLike").value(false))
                     .andExpect(jsonPath("$.data[0].userId").value(loginUser.getId()))
                     .andExpect(jsonPath("$.data[1].postId").value(anotherPost.getId()))
-                    .andExpect(jsonPath("$.data[1].isLike").value(false))
                     .andExpect(jsonPath("$.data[1].userId").value(anotherUser.getId()));
         }
 
@@ -260,10 +258,8 @@ class PostControllerTest extends ApiTestSupport {
                             .header(HttpHeaders.AUTHORIZATION, accessToken))
                     .andExpect(jsonPath("$.data.size()").value(2))
                     .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
-                    .andExpect(jsonPath("$.data[0].isLike").value(false))
                     .andExpect(jsonPath("$.data[0].userId").value(loginUser.getId()))
                     .andExpect(jsonPath("$.data[1].postId").value(anotherPost.getId()))
-                    .andExpect(jsonPath("$.data[1].isLike").value(true))
                     .andExpect(jsonPath("$.data[1].userId").value(anotherUser.getId()));
         }
 

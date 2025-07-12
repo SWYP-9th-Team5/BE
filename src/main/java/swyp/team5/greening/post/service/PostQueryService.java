@@ -44,10 +44,10 @@ public class PostQueryService {
 
     // 홈 화면 게시글
     @Transactional(readOnly = true)
-    public List<FindPostPreviewResponseDto> findLatestPostByCategory(Long userId) {
+    public List<FindPostPreviewResponseDto> findLatestPostByCategory() {
         return Stream.of(1L, 2L, 3L)
                 .flatMap(categoryId ->
-                        postQueryRepository.findTop6TodayByCategoryWithUserName(userId, categoryId)
+                        postQueryRepository.findTop6TodayByCategoryWithUserName(categoryId)
                                 .stream())
                 .toList();
     }
