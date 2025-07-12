@@ -18,7 +18,7 @@ import swyp.team5.greening.common.base.BaseTimeEntity;
 
 @Getter
 @Entity
-@Table(name = "daily_record_contets")
+@Table(name = "daily_record_contents")
 @NoArgsConstructor
 public class DailyRecordContent extends BaseTimeEntity {
 

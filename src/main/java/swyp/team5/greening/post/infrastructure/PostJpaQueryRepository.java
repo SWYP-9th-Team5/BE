@@ -39,25 +39,21 @@ public interface PostJpaQueryRepository extends JpaRepository<Post, Long>, PostQ
     @Override
     @Query("""
             SELECT new swyp.team5.greening.post.dto.response.FindPostPreviewResponseDto(
-            post.id, post.categoryId, post.userId, user.userName, post.title, c.content,
-            post.likeCount, post.commentCount, post.createdAt, post.updatedAt,
-            case when likes.id is not null then true else false end)
+            post.id, post.categoryId, post.userId, user.userName, post.title,
+                        case when c.type = 'IMAGE' then '이미지' else c.content end,
+            post.likeCount, post.commentCount, post.createdAt, post.updatedAt)
             FROM Post post
             INNER JOIN User user
                 ON user.id = post.userId
             LEFT JOIN PostContent c
                 ON c.post = post
             AND c.sequence = 1
-            LEFT JOIN Like likes
-                ON likes.postId = post.id
-                AND likes.userId = :loginUserId
             WHERE post.categoryId = :categoryId
                 AND post.state = 'IN_PROGRESS'
             ORDER BY post.likeCount DESC
             LIMIT 6
             """)
     List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(
-            @Param("loginUserId") Long loginUserId,
             @Param("categoryId") Long categoryId
     );
 

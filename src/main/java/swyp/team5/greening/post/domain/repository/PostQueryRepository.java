@@ -17,10 +17,7 @@ public interface PostQueryRepository {
             Long userId
     );
 
-    List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(
-            Long loginUserId,
-            Long categoryId
-    );
+    List<FindPostPreviewResponseDto> findTop6TodayByCategoryWithUserName(Long categoryId);
 
     Page<FindAllPostResponseDto> findAllByCategoryWithUserName(
             Long loginUserId,

@@ -85,10 +85,8 @@ public class PostController {
     @Operation(summary = "홈 화면 게시글 미리보기 (카테고리 별 각 6개씩)")
     @GetMapping("/home")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponseDto<List<FindPostPreviewResponseDto>> getLatestPosts(
-            @OptionalLogIn Long userId
-    ) {
-        return ApiResponseDto.of(postQueryService.findLatestPostByCategory(userId));
+    public ApiResponseDto<List<FindPostPreviewResponseDto>> getLatestPosts() {
+        return ApiResponseDto.of(postQueryService.findLatestPostByCategory());
     }
 
     @Operation(summary = "카테고리별 게시글 목록 조회 (pageNumber는 1부터 시작)")
