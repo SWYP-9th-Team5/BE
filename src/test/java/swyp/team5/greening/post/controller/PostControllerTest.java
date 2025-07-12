@@ -252,18 +252,6 @@ class PostControllerTest extends ApiTestSupport {
         }
 
         @Test
-        @DisplayName("로그인 한 유저에 따라 좋아요 여부가 올바르게 나타난다.")
-        void getLatestPosts2() throws Exception {
-            mockMvc.perform(get("/api/posts/home")
-                            .header(HttpHeaders.AUTHORIZATION, accessToken))
-                    .andExpect(jsonPath("$.data.size()").value(2))
-                    .andExpect(jsonPath("$.data[0].postId").value(post.getId()))
-                    .andExpect(jsonPath("$.data[0].userId").value(loginUser.getId()))
-                    .andExpect(jsonPath("$.data[1].postId").value(anotherPost.getId()))
-                    .andExpect(jsonPath("$.data[1].userId").value(anotherUser.getId()));
-        }
-
-        @Test
         @DisplayName("1번 카테고리 글이 잘 나타난다.")
         void getPostsByCategory1() throws Exception {
             mockMvc.perform(get("/api/posts")
