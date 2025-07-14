@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class PostQueryService {
     }
 
     // 홈 화면 게시글
+    @Cacheable(cacheNames = "getHomePosts", key = "'homePost'", cacheManager = "postCacheManager")
     @Transactional(readOnly = true)
     public List<FindPostPreviewResponseDto> findLatestPostByCategory() {
         return Stream.of(1L, 2L, 3L)
