@@ -1,7 +1,7 @@
 spring:
   data:
     redis:
-      host: localhost
+      host: ${REDIS_SERVER}
       port: 6379
 
   datasource:
