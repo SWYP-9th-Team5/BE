@@ -1,6 +1,8 @@
 name: CD (docker -> EC2)
 
 on:
+  pull_request:
+    branches: [ "develop" ]
   push:
     branches: [ "develop", "main" ]
 
@@ -39,9 +41,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # jar 이미지 빌드
       - name: Build the Docker image
         run: docker build . -t ${{ secrets.DOCKERHUB_USERNAME }}/greening
 
+      # jar 이미지 push
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/greening
 
@@ -58,24 +62,43 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
-            sudo docker stop greening-server || true
+            sudo docker compose down
             sudo docker container prune -f
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
-            sudo docker run -d --log-driver=syslog \
-            -e TZ=Asia/Seoul \
-            -p 8080:8080 --name greening-server \
-              -e "REDIS_SERVER=${{ secrets.REDIS_SERVER }}" \
-              -e "DB_URL=${{ secrets.DB_URL }}" \
-              -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
-              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-              -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
-              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
-              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
-              -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-              -e "S3_REGION=${{ secrets.S3_REGION }}" \
-              -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
-              -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
-              -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
-              -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
-            ${{ secrets.DOCKERHUB_USERNAME }}/greening
+            sudo docker compose -d --build
+
+#  deploy:
+#    needs: build
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Deploy to AWS via SSH
+#        uses: appleboy/ssh-action@v0.1.10
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ${{ secrets.EC2_USER }}
+#          key: ${{ secrets.EC2_SSH_KEY }}
+#          script: |
+#            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p${{ secrets.DOCKERHUB_TOKEN }}
+#            sudo docker stop greening-server || true
+#            sudo docker container prune -f
+#            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/greening:latest
+#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/greening
+#            sudo docker run -d --log-driver=syslog \
+#            -e TZ=Asia/Seoul \
+#            -p 8080:8080 --name greening-server \
+#              -e "REDIS_SERVER=${{ secrets.REDIS_SERVER }}" \
+#              -e "DB_URL=${{ secrets.DB_URL }}" \
+#              -e "DB_USERNAME=${{ secrets.DB_USERNAME }}" \
+#              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+#              -e "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+#              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
+#              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+#              -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+#              -e "S3_REGION=${{ secrets.S3_REGION }}" \
+#              -e "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
+#              -e "S3_STORAGE_ACCESS_KEY=${{ secrets.S3_STORAGE_ACCESS_KEY }}" \
+#              -e "S3_STORAGE_SECRET_KEY=${{ secrets.S3_STORAGE_SECRET_KEY }}" \
+#              -e "S3_BASE_URL=${{ secrets.S3_BASE_URL }}" \
+#            ${{ secrets.DOCKERHUB_USERNAME }}/greening
