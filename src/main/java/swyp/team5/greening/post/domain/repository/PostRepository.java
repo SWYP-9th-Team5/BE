@@ -14,4 +14,6 @@ public interface PostRepository {
 
     Optional<Post> findByIdAndState(Long postId, PostState state);
 
+    Optional<Post> findByIdAndStateWithLock(Long postId, PostState state);
+
 }

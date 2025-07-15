@@ -17,8 +17,6 @@ import swyp.team5.greening.post.domain.entity.PostState;
 import swyp.team5.greening.post.domain.repository.PostRepository;
 import swyp.team5.greening.post.exception.PostExceptionMessage;
 
-//todo: 댓글 추가나 삭제를 통해 발생하는 댓글 수 증감 -> 이벤트 처리
-//todo: 동시성 문제 처리
 @Service
 @RequiredArgsConstructor
 public class CommentCommandService {
@@ -34,7 +32,7 @@ public class CommentCommandService {
     ) {
         //게시물 존재 조회
         Post post = postRepository
-                .findByIdAndState(requestDto.postId(), PostState.IN_PROGRESS)
+                .findByIdAndStateWithLock(requestDto.postId(), PostState.IN_PROGRESS)
                 .orElseThrow(() ->
                         new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
@@ -82,7 +80,7 @@ public class CommentCommandService {
                         CommentExceptionMessage.NOT_FOUND_COMMENT));
 
         //게시물 존재 조회
-        Post post = postRepository.findByIdAndState(comment.getPostId(), PostState.IN_PROGRESS)
+        Post post = postRepository.findByIdAndStateWithLock(comment.getPostId(), PostState.IN_PROGRESS)
                 .orElseThrow(() ->
                         new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
@@ -91,11 +89,11 @@ public class CommentCommandService {
             throw new GreeningGlobalException(CommentExceptionMessage.BAD_REQUEST_COMMENT_WRITER);
         }
 
-        //게시물 댓글 수 감소
-        post.decreaseCommentCount();
-
         //댓글 삭제
         commentRepository.deleteById(requestDto.commentId());
+
+        //게시물 댓글 수 감소
+        post.decreaseCommentCount();
     }
 
 }

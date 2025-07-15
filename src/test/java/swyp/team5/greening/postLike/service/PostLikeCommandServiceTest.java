@@ -52,7 +52,7 @@ class PostLikeCommandServiceTest {
         @DisplayName("게시글을 좋아요 한 상태라면, 좋아요가 취소되며 좋아요 수가 감소한다.")
         void likeCancelTest() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+            given(postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)).willReturn(
                     Optional.of(post));
             ReflectionTestUtils.setField(post, "id", postId);
             given(likeRepository.findByUserIdAndPostId(userId, postId)).willReturn(
@@ -71,7 +71,7 @@ class PostLikeCommandServiceTest {
         @DisplayName("게시글을 좋아요 하지 않은 상태라면, 좋아요 처리되며 좋아요 수가 증가한ㄷ.")
         void likeTest() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+            given(postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)).willReturn(
                     Optional.of(post));
             ReflectionTestUtils.setField(post, "id", postId);
 

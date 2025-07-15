@@ -71,7 +71,7 @@ class CommentCommandServiceTest {
         @DisplayName("사용자는 게시물에 댓글을 작성할 수 있다. 이 때 게시물의 댓글 수가 증가한다.")
         void testCase1() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+            given(postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)).willReturn(
                     Optional.of(postEntity));
             given(commentRepository.save(any(Comment.class))).willReturn(commentEntity);
             ReflectionTestUtils.setField(postEntity, "id", postId);
@@ -82,7 +82,7 @@ class CommentCommandServiceTest {
                     userId, new SaveCommentRequestDto(postId, comment));
 
             //then
-            verify(postRepository).findByIdAndState(postId, PostState.IN_PROGRESS);
+            verify(postRepository).findByIdAndStateWithLock(postId, PostState.IN_PROGRESS);
             verify(commentRepository).save(any(Comment.class));
             assertThat(responseDto.id()).isEqualTo(commentEntity.getId());
             assertThat(postEntity.getCommentCount()).isEqualTo(1L);
@@ -92,7 +92,7 @@ class CommentCommandServiceTest {
         @DisplayName("게시물이 존재하지 않을 경우, 예외가 발생한다.")
         void testCase2() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+            given(postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)).willReturn(
                     Optional.empty());
 
             //when
@@ -170,7 +170,7 @@ class CommentCommandServiceTest {
         @DisplayName("댓글 삭제할 수 있다. 이 때 게시글의 댓글 수는 감소한다.")
         void testCase3() {
             //given
-            given(postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)).willReturn(
+            given(postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)).willReturn(
                     Optional.of(postEntity));
             given(commentRepository.findById(commentId)).willReturn(Optional.of(testComment));
 
