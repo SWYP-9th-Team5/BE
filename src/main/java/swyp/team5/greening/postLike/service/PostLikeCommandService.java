@@ -13,8 +13,6 @@ import swyp.team5.greening.postLike.domain.entity.Like;
 import swyp.team5.greening.postLike.domain.repository.LikeRepository;
 import swyp.team5.greening.postLike.dto.PostLikeResponseDto;
 
-//todo: 게시글 좋아요 수 상태 변화 -> 이벤트 처리
-//todo: 동시성 문제 처리
 @Service
 @RequiredArgsConstructor
 public class PostLikeCommandService {
@@ -26,7 +24,7 @@ public class PostLikeCommandService {
     @Transactional
     public PostLikeResponseDto likeOrCancel(Long userId, Long postId) {
         //게시글 조회
-        Post post = postRepository.findByIdAndState(postId, PostState.IN_PROGRESS)
+        Post post = postRepository.findByIdAndStateWithLock(postId, PostState.IN_PROGRESS)
                 .orElseThrow(
                         () -> new GreeningGlobalException(PostExceptionMessage.NOT_FOUND_POST));
 
