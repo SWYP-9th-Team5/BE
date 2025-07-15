@@ -19,7 +19,7 @@ import swyp.team5.greening.support.TestContainerSupport;
 
 @SpringBootTest
 @DisplayName("게시글 좋아요 동시성 테스트")
-public class PostLikeCommandIntegrationTest extends TestContainerSupport {
+class PostLikeCountConcurrencyTest extends TestContainerSupport {
 
     @Autowired
     private PostLikeCommandService postLikeCommandService;
@@ -31,7 +31,7 @@ public class PostLikeCommandIntegrationTest extends TestContainerSupport {
     private LikeRepository likeRepository;
 
     @BeforeEach
-    void setUp() {
+    void init() {
         postRepository.deleteAll();
         likeRepository.deleteAll();
     }
@@ -68,7 +68,6 @@ public class PostLikeCommandIntegrationTest extends TestContainerSupport {
                 executorService.submit(() -> {
                     postLikeCommandService.likeOrCancel(userId, post.getId());
                     countDownLatch.countDown();
-
                 });
             }
 
