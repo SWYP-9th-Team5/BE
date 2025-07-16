@@ -75,7 +75,7 @@ public class DailyRecordCommandService {
         List<DailyRecordContent> contents = requestDto.content().stream()
                 .map(dto -> DailyRecordContent.builder()
                         .content(dto.value())
-                        .type(DailyRecordContentType.valueOf(dto.type()))
+                        .type(DailyRecordContentType.valueOf(dto.type().toUpperCase()))
                         .build())
                 .toList();
 
