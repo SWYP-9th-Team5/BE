@@ -54,7 +54,8 @@ public class DailyRecordCommandService {
         }
 
         //3
-        if (!Objects.equals(nowDate.get(), requestDto.today())) {
+        //현재 시간 < 요청으로 들어온 시간
+        if (nowDate.get().isBefore(requestDto.today())) {
             throw new GreeningGlobalException(PetPlantExceptionMessage.INVALID_DATE_ACCESS);
         }
 

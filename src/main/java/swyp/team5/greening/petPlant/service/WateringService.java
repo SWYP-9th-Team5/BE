@@ -45,7 +45,7 @@ public class WateringService {
                     PetPlantExceptionMessage.BAD_REQUEST_PET_PLANT_WRITER);
         }
 
-        if (!Objects.equals(nowDate.get(), today)) {
+        if (nowDate.get().isBefore(today)) {
             throw new GreeningGlobalException(PetPlantExceptionMessage.INVALID_DATE_ACCESS);
         }
 
