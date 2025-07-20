@@ -60,7 +60,7 @@ class DailyRecordControllerTest extends ApiTestSupport {
 
         LocalDate now = LocalDate.of(2025, 7, 3);
 
-        LocalDate future = LocalDate.of(2025, 7, 5);
+        LocalDate past = LocalDate.of(2025, 7, 2);
 
         String title = "제목";
 
@@ -138,10 +138,10 @@ class DailyRecordControllerTest extends ApiTestSupport {
         }
 
         @Test
-        @DisplayName("오늘이 아닌 날짜에 대해 오늘의 기록을 작성할 수 없다.")
+        @DisplayName("오늘보다 이후 날짜에 대해 오늘의 기록을 작성할 수 없다.")
         void createDailyRecord3() throws Exception {
             //given
-            given(nowDate.get()).willReturn(future);
+            given(nowDate.get()).willReturn(past);
 
             //when
             ResultActions perform = mockMvc.perform(

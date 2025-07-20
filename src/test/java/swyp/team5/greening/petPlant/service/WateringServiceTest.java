@@ -51,7 +51,7 @@ class WateringServiceTest {
         private final String type = "민들레";
 
         private final LocalDate nowDate = LocalDate.of(2025,7,3);
-        private final LocalDate future = LocalDate.of(2030,8,16);
+        private final LocalDate future = LocalDate.of(2026,8,16);
 
         private PetPlant petPlant;
 
@@ -87,7 +87,7 @@ class WateringServiceTest {
                     userId, petPlant.getId(), nowDate);
 
             //then
-            assertThat(1L).isEqualTo(result.wateringId());
+            assertThat(result.wateringId()).isEqualTo(1L);
             verify(wateringRepository, times(1)).save(any(Watering.class));
         }
 
@@ -105,14 +105,14 @@ class WateringServiceTest {
         }
 
         @Test
-        @DisplayName("오늘이 아닌 날짜의 물을 줄 수 없다.")
+        @DisplayName("오늘보다 이후 날짜의 물을 줄 수 없다.")
         void wateringPlantTest3() {
             //given
-            given(now.get()).willReturn(future);
+            given(now.get()).willReturn(nowDate);
 
             //when
             ThrowingCallable throwingCallable = () -> wateringService.wateringPlant(
-                    userId, petPlant.getId(), nowDate);
+                    userId, petPlant.getId(), future);
 
             //then
             assertThatThrownBy(throwingCallable)
@@ -120,6 +120,4 @@ class WateringServiceTest {
                     .hasMessage(PetPlantExceptionMessage.INVALID_DATE_ACCESS.getMessage());
         }
     }
-
-
 }

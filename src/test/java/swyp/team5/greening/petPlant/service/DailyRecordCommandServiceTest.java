@@ -122,11 +122,13 @@ class DailyRecordCommandServiceTest {
         }
 
         @Test
-        @DisplayName("오늘이 아닌 날짜에 대해 오늘의 기록을 작성할 수 없다.")
+        @DisplayName("오늘보다 이후 날짜에 대해 오늘의 기록을 작성할 수 없다.")
         void createDailyRecord3() {
             //given
             List<DailyRecordContentDto> contents = List.of(
                     new DailyRecordContentDto("TEXT", content));
+
+            given(now.get()).willReturn(nowDate);
 
             //when
             ThrowingCallable throwingCallable = () -> dailyRecordCommandService.createDailyRecord(
