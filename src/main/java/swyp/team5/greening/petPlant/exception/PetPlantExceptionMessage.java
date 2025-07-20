@@ -14,7 +14,7 @@ public enum PetPlantExceptionMessage implements ExceptionMessage {
     NOT_FOUND_DAILY_RECORD("해당 날짜의 기록이 존재하지 않습니다.", "404"),
     ALREADY_EXISTS_DAILY_RECORD("이미 작성한 오늘의 기록이 존재합니다", "409"),
 
-    INVALID_DATE_ACCESS("해당 날짜에만 접근 가능합니다.", "400");
+    INVALID_DATE_ACCESS("해당 날짜에 미리 접근할 수 없습니다.", "400");
 
     private final String message;
     private final String code;
